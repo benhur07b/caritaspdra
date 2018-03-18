@@ -1,7 +1,7 @@
-# This file contains metadata for your plugin. Since 
-# version 2.0 of QGIS this is the proper way to supply 
-# information about a plugin. The old method of 
-# embedding metadata in __init__.py will 
+# This file contains metadata for your plugin. Since
+# version 2.0 of QGIS this is the proper way to supply
+# information about a plugin. The old method of
+# embedding metadata in __init__.py will
 # is no longer supported since version 2.0.
 
 # This file should be included when you package your plugin.# Mandatory items:
@@ -9,15 +9,15 @@
 [general]
 name=Caritas PDRA Analysis Tool
 qgisMinimumVersion=3.0
-description=This plugin performs different analysis usin Caritas-Philippines PDRA data.
+description=This plugin performs different analysis using Caritas-Philippines Participatory Disaster Risk Assessment (PDRA) data.
 version=0.1
 author=Ben Hur Pintor
 email=bhs.pintor@gmail.com
 
 about=The Caritas PDRA Analysis Tool performs analysis using data obtained using Participatory Disaster Risk Assessment (PDRA) by Caritas Philippines. This includes risk computations, mapping of at-risk households, etc.
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/benhur07b/caritaspdra/issues
+repository=https://github.com/benhur07b/caritaspdra
 # End of mandatory metadata
 
 # Recommended items:
@@ -28,7 +28,7 @@ repository=http://repo
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=http://homepage
+homepage=https://benhur07b.github.io
 category=Plugins
 icon=icon.png
 # experimental flag
@@ -36,4 +36,3 @@ experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
-

@@ -49,18 +49,19 @@ PY_FILES = \
 	caritas_pdra.py \
 	caritas_pdra_risk_dialog.py
 
-UI_FILES = caritas_pdra_risk_dialog_base.ui
+UI_FILES = caritas_pdra_risk_dialog_ui.ui
 
 EXTRAS = \
 	metadata.txt \
 	icon.png \
-	img/icons/icon-risk.png
+	img/icons/icon-risk.png \
+	img/logos/logo-nassa-caritas.png
 
 EXTRA_DIRS = img
 
-COMPILED_RESOURCE_FILES = resources.py
+COMPILED_RESOURCE_FILES = resources_rc.py
 
-PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui
+PEP8EXCLUDE=pydev,resources_rc.py,conf.py,third_party,ui
 
 
 #################################################

@@ -2,5 +2,6 @@
     <qresource prefix="/plugins/caritas_pdra" >
         <file>icon.png</file>
         <file>img/icons/icon-risk.png</file>
+        <file>img/logos/logo-nassa-caritas.png</file>
     </qresource>
 </RCC>

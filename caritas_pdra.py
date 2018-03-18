@@ -37,10 +37,10 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from qgis.core import *
 
-# Initialize Qt resources from file resources.py
-from .resources import *
+# Initialize Qt resources from file resources_rc.py
+from .resources_rc import *
 # Import the code for the dialog
-from .caritas_pdra_risk_dialog import CaritasPDRARiskDialog
+# from .caritas_pdra_risk_dialog import CaritasPDRARiskDialog
 import os.path
 
 
@@ -174,6 +174,7 @@ class CaritasPDRA:
 
         return action
 
+
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
@@ -182,13 +183,6 @@ class CaritasPDRA:
 
         # Create the Menu in plugins
         self._create_caritas_pdra_risk_action()
-
-        # icon_path = ':/plugins/caritas_pdra/icon.png'
-        # self.add_action(
-        #     icon_path,
-        #     text=self.tr(u'Caritas PDRA Analysis Tool'),
-        #     callback=self.run,
-        #     parent=self.iface.mainWindow())
 
 
     def unload(self):
@@ -216,11 +210,13 @@ class CaritasPDRA:
             parent=self.iface.mainWindow()
         )
 
+
     def caritas_pdra_risk(self):
         """Show dialog for PDRA Risk Analysis"""
 
-        # from caritas_pdra_risk_dialog import CaritasPDRARiskDialog
+        from .caritas_pdra_risk_dialog import CaritasPDRARiskDialog
 
+        '''Run only if there are layers already loaded in QGIS'''
         if len(QgsProject.instance().mapLayers()) > 0:
             dialog = CaritasPDRARiskDialog(
                 self.iface.mainWindow())
@@ -229,15 +225,3 @@ class CaritasPDRA:
         else:
             msg = "NO LAYERS FOUND.\n\nAdd layers first before running the plugin."
             QMessageBox.critical(self.iface.mainWindow(), "WARNING", msg)
-
-    # def run(self):
-    #     """Run method that performs all the real work"""
-    #     # show the dialog
-    #     self.dlg.show()
-    #     # Run the dialog event loop
-    #     result = self.dlg.exec_()
-    #     # See if OK was pressed
-    #     if result:
-    #         # Do something useful here - delete the line containing pass and
-    #         # substitute with your code.
-    #         pass

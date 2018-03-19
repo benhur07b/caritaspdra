@@ -1,14 +1,15 @@
 INDICATOR_CODE,INDICATOR_NAME,CATEGORY,RISK_VALUE
-LAT,Latitude,Others,0
-LON,Longitude,Others,0
-HEAD,Household Head,Others,0
-HEAD_AGE,Age of Household Head,Others,0
-SPOUSE,Name of Spouse,Others,0
-SPOUSE_AGE,Age of Spouse,Others,0
-BRGY,Barangay,Others,0
-MUNICITY,Municipality or City,Others,0
-PROVINCE,Province,Others,0
-DIOCESE,Diocese,Others,0
+LAT,Latitude,Information,0
+LON,Longitude,Information,0
+DIOCESE,Diocese,Information,0
+PROVINCE,Province,Information,0
+MUNICITY,Municipality or City,Information,0
+BRGY,Barangay,Information,0
+HEAD,Household Head,Information,0
+HEAD_SEX,Sex of Household Head,Information,0
+HEAD_AGE,Age of Household Head,Information,0
+SPOUSE,Name of Spouse,Information,0
+SPOUSE_AGE,Age of Spouse,Information,0
 H_SSURGE,Storm Surge,Hazard,1
 H_EQUAKE,Earthquake,Hazard,1
 H_LSLIDE,Landslide,Hazard,1

@@ -39,15 +39,19 @@ import re
 class Indicators():
     """Class for the PDRA Indicators.
 
-    Format of Household PDRA Indicators CSV is:
+    The Format of Household PDRA Indicators CSV is:
     index   value
     0       INDICATOR_CODE
     1       INDICATOR_NAME
     2       CATEGORY
     3       RISK_VALUE
+
+    The Format of the INDICATOR_CODE is: CATEGORY_MAINCLASS_SECONDARYCLASS_SUBCLASS
     """
 
-    def __init__(self, indicators_path):
+    def __init__(self,
+                 indicators_path):
+
         self.indicators_path = indicators_path
         self.indicators_list = self.get_indicators_list()
 
@@ -67,7 +71,8 @@ class Indicators():
         return [i[0] for i in self.indicators_list]
 
 
-    def get_indicator_codes_from_indicators_list(self, indicators_list):
+    def get_indicator_codes_from_indicators_list(self,
+                                                 indicators_list):
 
         return [i[0] for i in indicators_list]
 
@@ -77,12 +82,14 @@ class Indicators():
         return [i[1] for i in self.indicators_list]
 
 
-    def get_indicator_names_from_indicators_list(self, indicators_list):
+    def get_indicator_names_from_indicators_list(self,
+                                                 indicators_list):
 
         return [i[1] for i in indicators_list]
 
 
-    def get_indicator_name_from_code(self, indicator_code):
+    def get_indicator_name_from_code(self,
+                                     indicator_code):
         """Returns the INDICATOR_NAME of the given INDICATOR_CODE"""
 
         if indicator_code in self.get_indicator_codes():  # if indicator_code exists, return the indicator_name
@@ -91,7 +98,8 @@ class Indicators():
             return None
 
 
-    def get_indicator_code_from_name(self, indicator_name):
+    def get_indicator_code_from_name(self,
+                                     indicator_name):
         """Returns the INDICATOR_CODE of the given INDICATOR_NAME"""
 
         if indicator_name in self.get_indicator_names():  # if indicator_name exists, return the indicator_code
@@ -106,7 +114,8 @@ class Indicators():
         return sorted(list(set([i[2].capitalize() for i in self.indicators_list])))  # capitalize is called so that 'hazard' and 'Hazard' are considere the same
 
 
-    def get_list_of_indicators_in_category(self, category):
+    def get_list_of_indicators_in_category(self,
+                                           category):
         """Returns a list of indicators for a given category"""
 
         if category.capitalize() in self.get_list_of_categories():
@@ -150,3 +159,44 @@ class Indicators():
             codes_dict[category] = [i[0] for i in self.get_list_of_indicators_in_category(category)]
 
         return codes_dict
+
+
+
+
+def copy_vector_layer(layer,
+                      outputname,
+                      vectortype):
+    """Copies a vector layer"""
+
+    features = [f for f in layer.getFeatures()]
+
+    copylayer = QgsVectorLayer("{}?crs={}".format(vectortype, layer.crs().authid().lower()), outputname, "memory")
+
+    data = copylayer.dataProvider()
+    attr = layer.dataProvider().fields().toList()
+    data.addAttributes(attr)
+    copylayer.updateFields()
+    data.addFeatures(features)
+
+    QgsProject.instance().addMapLayer(copylayer)
+
+
+def delete_fields(layer,
+                  fields):
+    """Deletes the fields of a vector layer"""
+
+    to_delete = fields
+
+    res = layer.dataProvider().deleteAttributes(to_delete)
+    layer.updateFields()
+
+
+def retain_fields(layer,
+                  fields):
+    """Retains the fields of a vector layer"""
+
+    fields_ind = range(len(layer.fields().toList()))  # get indices of all fields (= list of number of fields)
+    to_delete = [f for f in fields_ind if f not in fields]
+
+    res = layer.dataProvider().deleteAttributes(to_delete)
+    layer.updateFields()

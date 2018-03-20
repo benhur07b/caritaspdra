@@ -65,6 +65,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
 
         # Setup button responses
         self.buttonBox.accepted.connect(self.run)
+        self.buttonBox.rejected.connect(self.close)
         self.hazSelectAllBtn.clicked.connect(self.hazListWidget.selectAll)
         self.hazUnselectAllBtn.clicked.connect(self.hazListWidget.clearSelection)
         self.vulSelectAllBtn.clicked.connect(self.vulListWidget.selectAll)
@@ -120,7 +121,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
             "Hazard": count_haz,
             "Vulnerability": count_vul,
             "Capacity": count_cap,
-            "Risk": count_haz + count_vul - count_cap  # computation or risk is H + V - C
+            "Risk": count_haz + count_vul  # computation or risk is H + V - C
         }
 
 
@@ -144,24 +145,28 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         info_indexes = [household.fields().indexFromName(code) for code in info_codes]
         risk_indexes = haz_indexes + vul_indexes + cap_indexes
 
+        cat_indexes = {'Hazard': haz_indexes,
+                       'Vulnerability': vul_indexes,
+                       'Capacity': cap_indexes,
+                       'Risk': risk_indexes}
+
         haz_name = "{}_HAZARD".format(result_basename)
         vul_name = "{}_VULNERABILITY".format(result_basename)
         cap_name = "{}_CAPACITY".format(result_basename)
         risk_name = "{}_RISK".format(result_basename)
 
         # count for main indicators per category, the main indicator is the value after the first underscore in the field name (X_MAIN)
-        main_indicator_counts = self.count_main_indicators()
-        haz_count = main_indicator_counts['Hazard']
-        vul_count = main_indicator_counts['Vulnerability']
-        cap_count = main_indicator_counts['Capacity']
-        risk_count = main_indicator_counts['Risk']
+        cat_counts = self.count_main_indicators()
+        haz_count = cat_counts['Hazard']
+        vul_count = cat_counts['Vulnerability']
+        cap_count = cat_counts['Capacity']
+        risk_count = cat_counts['Risk']
 
         if len(haz_indexes) > 0:
             self.compute_category_values(household,
                                          haz_name,
                                          haz_indexes,
                                          haz_count,
-                                         haz_codes,
                                          info_indexes,
                                          "HAZ")
 
@@ -170,7 +175,6 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                                          vul_name,
                                          vul_indexes,
                                          vul_count,
-                                         vul_codes,
                                          info_indexes,
                                          "VUL")
 
@@ -179,9 +183,17 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                                          cap_name,
                                          cap_indexes,
                                          cap_count,
-                                         cap_codes,
                                          info_indexes,
                                          "CAP")
+
+        if len(risk_indexes) > 0:
+            self.compute_risk(household,
+                              risk_name,
+                              cat_indexes,
+                              cat_counts,
+                              info_indexes,
+                              ["HAZ", "VUL", "CAP", "RISK"]
+                              )
 
 
     def compute_category_values(self,
@@ -189,7 +201,6 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                                 name,
                                 cat_indexes,
                                 cat_count,
-                                cat_codes,
                                 info_indexes,
                                 cat):
 
@@ -200,10 +211,14 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         res = layer.dataProvider().addAttributes([QgsField("{}_TOTAL".format(cat), QVariant.Double, 'double', 4, 2)])
         layer.updateFields()
 
+        res = layer.dataProvider().addAttributes([QgsField("{}_NORM".format(cat), QVariant.Double, 'double', 4, 2)])
+        layer.updateFields()
+
         res = layer.dataProvider().addAttributes([QgsField("{}_LEVEL".format(cat), QVariant.String)])
         layer.updateFields()
 
         total_field = layer.fields().indexFromName("{}_TOTAL".format(cat))
+        norm_field = layer.fields().indexFromName("{}_NORM".format(cat))
         level_field = layer.fields().indexFromName("{}_LEVEL".format(cat))
 
         '''Compute for Category Total and Level'''
@@ -220,29 +235,188 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                 except (TypeError, ValueError) as e:
                     total += 0
 
-            f[total_field] = total/cat_count
+            # f[total_field] = total/cat_count
+            cat_norm = total/cat_count
 
-            level = total/cat_count
-            if level < 0.50:
+            f[total_field] = total
+            f[norm_field] = cat_norm
+
+            if cat_norm < 0.50:
                 f[level_field] = "LOW"
 
-            elif level >= 0.50 and level <= 0.75:
+            elif cat_norm >= 0.50 and cat_norm <= 0.75:
                 f[level_field] = "MEDIUM"
 
             else:
                 f[level_field] = "HIGH"
 
+            layer.updateFeature(f)
+        layer.commitChanges()
+
+        '''Remove unneeded fields'''
+        retain_fields(layer, info_indexes + [norm_field, total_field, level_field])
+
+        '''Add symbology (color LOW-MEDIUM-HIGH)'''
+        if cat == "CAP":
+            self.add_symbology(layer,
+                               cat,
+                               RISK_COLORS_INV)
+
+        else:
+            self.add_symbology(layer,
+                               cat,
+                               RISK_COLORS)
+
+
+    def compute_risk(self,
+                     household,
+                     name,
+                     cat_indexes,
+                     cat_counts,
+                     info_indexes,
+                     cats):
+
+        copy_vector_layer(household, name, "Point")
+        layer = QgsProject.instance().mapLayersByName(name)[0]
+
+        total_fields = {}
+        norm_fields = {}
+        level_fields = {}
+
+        '''Category fields'''
+        for cat in cats[:3]:
+            res = layer.dataProvider().addAttributes([QgsField("{}_TOTAL".format(cat), QVariant.Double, 'double', 4, 2)])
+            layer.updateFields()
+
+            res = layer.dataProvider().addAttributes([QgsField("{}_NORM".format(cat), QVariant.Double, 'double', 4, 2)])
+            layer.updateFields()
+
+            res = layer.dataProvider().addAttributes([QgsField("{}_LEVEL".format(cat), QVariant.String)])
+            layer.updateFields()
+
+        for cat in cats[:3]:
+            total_fields[cat] = layer.fields().indexFromName("{}_TOTAL".format(cat))
+            norm_fields[cat] = layer.fields().indexFromName("{}_NORM".format(cat))
+            level_fields[cat] = layer.fields().indexFromName("{}_LEVEL".format(cat))
+
+        '''Risk fields'''
+        res = layer.dataProvider().addAttributes([QgsField("RISK_NORM", QVariant.Double, 'double', 4, 2)])
+        layer.updateFields()
+
+        res = layer.dataProvider().addAttributes([QgsField("RISK_LEVEL", QVariant.String)])
+        layer.updateFields()
+
+        norm_field = layer.fields().indexFromName("RISK_NORM")
+        level_field = layer.fields().indexFromName("RISK_LEVEL")
+
+        '''Edit attribute table'''
+        features = layer.getFeatures()
+        for f in features:
+            layer.startEditing()
+            attr = f.attributes()
+
+            haz_total = 0
+            vul_total = 0
+            cap_total = 0
+            # risk_total = 0
+
+            for index in cat_indexes["Risk"]:
+                try:
+                    x = float(attr[index])
+                    if index in cat_indexes["Hazard"]:
+                        haz_total += x
+                        # risk_total += x
+                    if index in cat_indexes["Vulnerability"]:
+                        vul_total += x
+                        # risk_total += x
+                    if index in cat_indexes["Capacity"]:
+                        cap_total += x
+                        # risk_total -= x
+
+                except (TypeError, ValueError) as e:
+                    haz_total += 0
+                    vul_total += 0
+                    cap_total += 0
+                    # risk_total += 0
+
+            if cap_total == 0:  # make sure cap_total is always positive because it is a divisor
+                cap_total = 1
+
+            haz_norm = haz_total/cat_counts["Hazard"]
+            vul_norm = vul_total/cat_counts["Vulnerability"]
+            cap_norm = cap_total/cat_counts["Capacity"]
+            risk_norm = ((haz_total + vul_total)/cap_total)/((cat_counts["Hazard"] + cat_counts["Vulnerability"]))
+            # risk_level = risk_total/cat_counts["Risk"]
+
+            f[total_fields["HAZ"]] = haz_total
+            f[total_fields["VUL"]] = vul_total
+            f[total_fields["CAP"]] = cap_total
+
+            f[norm_fields["HAZ"]] = haz_norm
+            f[norm_fields["VUL"]] = vul_norm
+            f[norm_fields["CAP"]] = cap_norm
+            f[norm_field] = risk_norm
+
+            # f[total_fields["HAZ"]] = haz_level
+            # f[total_fields["VUL"]] = vul_level
+            # f[total_fields["CAP"]] = cap_level
+            # f[total_fields["RISK"]] = risk_level
+
+            if haz_norm < 0.50:
+                f[level_fields["HAZ"]] = "LOW"
+
+            elif haz_norm >= 0.50 and haz_norm <= 0.75:
+                f[level_fields["HAZ"]] = "MEDIUM"
+
+            else:
+                f[level_fields["HAZ"]] = "HIGH"
+
+            if vul_norm < 0.50:
+                f[level_fields["VUL"]] = "LOW"
+
+            elif vul_norm >= 0.50 and vul_norm <= 0.75:
+                f[level_fields["VUL"]] = "MEDIUM"
+
+            else:
+                f[level_fields["VUL"]] = "HIGH"
+
+            if cap_norm < 0.50:
+                f[level_fields["CAP"]] = "LOW"
+
+            elif cap_norm >= 0.50 and cap_norm <= 0.75:
+                f[level_fields["CAP"]] = "MEDIUM"
+
+            else:
+                f[level_fields["CAP"]] = "HIGH"
+
+            if risk_norm < 0.25:
+                f[level_field] = "LOW"
+
+            elif risk_norm >= 0.25 and risk_norm <= 0.50:
+                f[level_field] = "MEDIUM"
+
+            else:
+                f[level_field] = "HIGH"
 
             layer.updateFeature(f)
         layer.commitChanges()
 
         '''Remove unneeded fields'''
-        retain_fields(layer, info_indexes + [total_field, level_field])
+        retain_fields(layer,
+                      info_indexes + [norm_field, level_field] + list(norm_fields.values()) + list(total_fields.values()) + list(level_fields.values()))
 
+        self.add_symbology(layer,
+                           "RISK",
+                           RISK_COLORS)
+
+
+    def add_symbology(self,
+                      layer,
+                      cat,
+                      colors):
         '''Add symbology (color LOW-MEDIUM-HIGH)'''
-        levels = [("LOW", "yellow", "LOW"),
-                  ("MEDIUM", "green", "MEDIUM"),
-                  ("HIGH", "red", "HIGH")]
+
+        levels = colors
 
         categories = []
 

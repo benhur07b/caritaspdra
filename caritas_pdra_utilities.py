@@ -36,6 +36,16 @@ import csv
 import re
 
 
+# COLOR SCHEME
+RISK_COLORS = [("LOW", "green", "LOW"),
+               ("MEDIUM", "orange", "MEDIUM"),
+               ("HIGH", "red", "HIGH")]
+
+RISK_COLORS_INV = [("LOW", "red", "LOW"),
+                   ("MEDIUM", "orange", "MEDIUM"),
+                   ("HIGH", "green", "HIGH")]
+
+
 class Indicators():
     """Class for the PDRA Indicators.
 

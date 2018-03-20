@@ -43,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>20</y>
+     <y>10</y>
      <width>441</width>
      <height>27</height>
     </rect>
@@ -67,7 +67,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
+     <y>10</y>
      <width>281</width>
      <height>31</height>
     </rect>
@@ -88,7 +88,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>60</y>
+     <y>50</y>
      <width>201</width>
      <height>31</height>
     </rect>
@@ -109,7 +109,7 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>60</y>
+     <y>50</y>
      <width>441</width>
      <height>27</height>
     </rect>
@@ -125,7 +125,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>100</y>
+     <y>90</y>
      <width>311</width>
      <height>31</height>
     </rect>
@@ -394,9 +394,9 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>810</x>
+     <x>720</x>
      <y>490</y>
-     <width>81</width>
+     <width>171</width>
      <height>31</height>
     </rect>
    </property>
@@ -404,7 +404,7 @@
     <string>Perform Risk Computation</string>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
    </property>
   </widget>
  </widget>

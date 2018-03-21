@@ -78,6 +78,7 @@ class CaritasPDRA:
 
         # Declare instance attributes
         self.action_caritas_pdra_risk = None
+        self.action_caritas_pdra_statistics = None
         self.actions = []
         self.menu = self.tr(u'&Caritas PDRA Analysis Tool')
 
@@ -183,6 +184,7 @@ class CaritasPDRA:
 
         # Create the Menu in plugins
         self._create_caritas_pdra_risk_action()
+        self._create_caritas_pdra_statistics_action()
 
 
     def unload(self):
@@ -219,6 +221,37 @@ class CaritasPDRA:
         '''Run only if there are layers already loaded in QGIS'''
         if len(QgsProject.instance().mapLayers()) > 0:
             dialog = CaritasPDRARiskDialog(
+                self.iface.mainWindow())
+            dialog.exec_()
+
+        else:
+            msg = "NO LAYERS FOUND.\n\nAdd layers first before running the plugin."
+            QMessageBox.critical(self.iface.mainWindow(), "WARNING", msg)
+
+
+    '''PDRA Statistics Computation'''
+    def _create_caritas_pdra_statistics_action(self):
+        """Create action for PDRA statistics computations"""
+
+        icon = ':plugins/caritas_pdra/img/icons/icon-statistics.png'
+        self.add_action(
+            icon,
+            text=self.tr(u'Caritas PDRA Statistics Computation'),
+            status_tip=self.tr(u'Compute Statistics or Aggregate from PDRA data'),
+            whats_this=self.tr(u'Compute Statistics or Aggregate from PDRA data'),
+            callback=self.caritas_pdra_statistics,
+            parent=self.iface.mainWindow()
+        )
+
+
+    def caritas_pdra_statistics(self):
+        """Show dialog for PDRA Statistics Analysis"""
+
+        from .caritas_pdra_statistics_dialog import CaritasPDRAStatisticsDialog
+
+        '''Run only if there are layers already loaded in QGIS'''
+        if len(QgsProject.instance().mapLayers()) > 0:
+            dialog = CaritasPDRAStatisticsDialog(
                 self.iface.mainWindow())
             dialog.exec_()
 

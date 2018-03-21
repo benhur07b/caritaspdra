@@ -61,7 +61,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         # #widgets-and-dialogs-with-auto-connect
         self.parent = parent
         self.setupUi(self)
-        self.setWindowTitle(self.tr('PDRA Risk Computations'))
+        # self.setWindowTitle(self.tr('PDRA Risk Computations'))
 
         # Setup button responses
         self.buttonBox.accepted.connect(self.run)
@@ -127,7 +127,8 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
 
     def run(self):
 
-        household = QgsProject.instance().mapLayersByName(self.selectHHComboBox.currentText())[0]
+        # household = QgsProject.instance().mapLayersByName(self.selectHHComboBox.currentText())[0]
+        household = self.selectHHComboBox.currentLayer()
         result_basename = self.resultBasenameLineEdit.text()
 
         # codes of selected indicators
@@ -194,6 +195,8 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                               info_indexes,
                               ["HAZ", "VUL", "CAP", "RISK"]
                               )
+
+        self.close()
 
 
     def compute_category_values(self,

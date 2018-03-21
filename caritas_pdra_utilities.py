@@ -118,6 +118,26 @@ class Indicators():
             return None
 
 
+    def get_value_from_code(self,
+                            indicator_code):
+        """Returns the value of the indicator using the indicator code"""
+
+        if indicator_code in self.get_indicator_codes():  # if indicator_code exists, return the indicator_name
+            return [i[3] for i in self.indicators_list if i[0] == indicator_code][0]
+        else:
+            return None
+
+
+    def get_value_from_name(self,
+                            indicator_name):
+        """Returns the value of the indicator using the indicator code"""
+
+        if indicator_name in self.get_indicator_names():  # if indicator_code exists, return the indicator_name
+            return [i[3] for i in self.indicators_list if i[1] == indicator_name][0]
+        else:
+            return None
+
+
     def get_list_of_categories(self):
         """Returns the list of categories"""
 

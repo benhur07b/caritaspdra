@@ -68,18 +68,10 @@ class CaritasPDRAStatisticsDialog(QDialog, Ui_CaritasPDRAStatisticsDialog):
         # Setup button responses
         self.buttonBox.accepted.connect(self.run)
         self.buttonBox.rejected.connect(self.close)
-        self.selectAllBtn.clicked.connect(self.select_all_statchk)
-        self.clearBtn.clicked.connect(self.clear_statchk)
-
-        # Checkboxes
-        self.checkboxes = [self.countChk,
-                           self.uniqueChk,
-                           self.minChk,
-                           self.maxChk,
-                           self.sumChk,
-                           self.meanChk,
-                           self.medianChk,
-                           self.stdevChk]
+        self.selectAllFieldsBtn.clicked.connect(self.fieldsList.selectAll)
+        self.unselectAllFieldsBtn.clicked.connect(self.fieldsList.clearSelection)
+        self.selectAllSummariesBtn.clicked.connect(self.summariesList.selectAll)
+        self.unselectAllSummariesBtn.clicked.connect(self.summariesList.clearSelection)
 
         self.categories = indicators.get_list_of_categories()
         self.filterByCategoryComboBox.addItems(sorted(self.categories))
@@ -94,12 +86,10 @@ class CaritasPDRAStatisticsDialog(QDialog, Ui_CaritasPDRAStatisticsDialog):
 
     def run(self):
 
-        pass
-
         household = self.selectHHComboBox.currentLayer()
         boundary = self.selectAdminComboBox.currentLayer()
-        stats = self.get_stats()
-        fields = self.get_indicator_to_compute()
+        stats = self.get_summaries()
+        fields = self.get_indicators_to_compute()
 
         parameters = {'INPUT': boundary,
                       'JOIN': household,
@@ -109,18 +99,28 @@ class CaritasPDRAStatisticsDialog(QDialog, Ui_CaritasPDRAStatisticsDialog):
                       'DISCARD_NONMATCHING' : False,
                       'OUTPUT' : 'memory:' }
 
-        if len(stats) > 0:
-            stats_str = ",".join(stats)
+        '''If there is at least 1 stat and field selected, compute for a summary'''
+        if (len(stats) > 0) and (len(fields) > 0):
+            processing.runAndLoadResults("qgis:joinbylocationsummary", parameters)
 
-            processing.run("qgis:joinattributesbylocationsummary", parameters)
+        '''If only 1 stat and 1 field is selected, add symbology and label'''
+        if (len(stats) == 1) and (len(fields) == 1):
+            pass
+
+        layer = QgsProject.instance().mapLayersByName("Joined layer")[0]
+        layer.setName("{}_{}".format(household.name(), "SUMMARY"))
 
 
-
-    def get_stats(self):
+    def get_summaries(self):
         """Returns the checked stats to compute"""
 
-        pass
+        return [x.row() for x in self.summariesList.selectedIndexes()]
 
+
+    def get_indicators_to_compute(self):
+        """Get the field to compute statistics for"""
+
+        return [indicators.get_indicator_code_from_name(name) for name in [field.text() for field in self.fieldsList.selectedItems()]]
 
 
     def get_pdra_indicators_in_hh_layer(self):
@@ -137,25 +137,19 @@ class CaritasPDRAStatisticsDialog(QDialog, Ui_CaritasPDRAStatisticsDialog):
         return sorted(fieldnames)
 
 
-    def get_indicator_to_compute(self):
-        """Get the field to compute statistics for"""
-
-        return [indicators.get_indicator_code_from_name(self.fieldList.currentText())]
-
-
     def change_household(self):
         """Change the contents of the Select Field Combo Box when the household layer is changed"""
 
-        self.fieldList.clear()
+        self.fieldsList.clear()
 
         fieldnames = self.get_pdra_indicators_in_hh_layer()
-        self.fieldList.addItems(fieldnames)
+        self.fieldsList.addItems(fieldnames)
 
 
     def change_category(self):
         """Change the contents of the Select Field Combo Box when the category is changed"""
 
-        self.fieldList.clear()
+        self.fieldsList.clear()
 
         fieldnames = self.get_pdra_indicators_in_hh_layer()
-        self.fieldList.addItems(fieldnames)
+        self.fieldsList.addItems(fieldnames)

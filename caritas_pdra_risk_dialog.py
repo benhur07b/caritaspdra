@@ -187,7 +187,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                                          info_indexes,
                                          "CAP")
 
-        if len(risk_indexes) > 0:
+        if (len(haz_indexes) > 0) and (len(vul_indexes) > 0) and (len(cap_indexes) > 0):
             self.compute_risk(household,
                               risk_name,
                               cat_indexes,
@@ -234,7 +234,11 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
 
             for index in cat_indexes:
                 try:
-                    total += float(attr[index])
+                    # new
+                    # print(layer.fields().at(index).name())
+                    value = float(indicators.get_value_from_code(layer.fields().at(index).name()))
+                    # print(value)
+                    total += (float(attr[index]) * value)
                 except (TypeError, ValueError) as e:
                     total += 0
 
@@ -326,14 +330,16 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
             for index in cat_indexes["Risk"]:
                 try:
                     x = float(attr[index])
+                    value = float(indicators.get_value_from_code(layer.fields().at(index).name()))
                     if index in cat_indexes["Hazard"]:
-                        haz_total += x
+
+                        haz_total += (x * value)
                         # risk_total += x
                     if index in cat_indexes["Vulnerability"]:
-                        vul_total += x
+                        vul_total += (x * value)
                         # risk_total += x
                     if index in cat_indexes["Capacity"]:
-                        cap_total += x
+                        cap_total += (x * value)
                         # risk_total -= x
 
                 except (TypeError, ValueError) as e:

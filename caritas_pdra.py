@@ -236,9 +236,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-statistics.png'
         self.add_action(
             icon,
-            text=self.tr(u'Caritas PDRA Statistics Computation'),
-            status_tip=self.tr(u'Compute Statistics or Aggregate from PDRA data'),
-            whats_this=self.tr(u'Compute Statistics or Aggregate from PDRA data'),
+            text=self.tr(u'Caritas PDRA Summary Statistics'),
+            status_tip=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
+            whats_this=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
             callback=self.caritas_pdra_statistics,
             parent=self.iface.mainWindow()
         )

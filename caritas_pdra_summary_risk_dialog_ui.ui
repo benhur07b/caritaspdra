@@ -34,7 +34,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data</string>
+   <string>Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data (shp-version)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">

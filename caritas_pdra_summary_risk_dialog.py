@@ -222,10 +222,10 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                         QgsProject.instance().removeMapLayers([layer_2.id()])
 
                     add_ranged_symbology(layer,
-                                         "IF ({outfield} IS NULL, 0, {outfield})".format(outfield=outfield),
+                                         'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield),
                                          PERCENTAGE_COLORS)
                     add_labels(layer,
-                               "IF({outfield} IS NULL, '0%', concat(format_number(to_string({outfield}), 0), '%'))".format(outfield=outfield))
+                               'IF("{outfield}" IS NULL, {zero}, concat(format_number(to_string("{outfield}"), 0), {percent}))'.format(outfield=outfield, zero=str("'0%'"), percent=str("'%'")))
 
         except AssertionError:
             msg = "Must select an indicator and a summary to be computed. Will close dialog. Try again."
@@ -247,7 +247,8 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
     def get_indicators_to_compute(self):
         """Get the field to compute statistics for"""
 
-        return [indicators.get_indicator_code_from_name(name) for name in [field.text() for field in self.fieldsList.selectedItems()]]
+        return [field.text() for field in self.fieldsList.selectedItems()]
+        # return [indicators.get_indicator_code_from_name(name) for name in [field.text() for field in self.fieldsList.selectedItems()]]
 
 
     def get_pdra_indicators_in_hh_layer(self):
@@ -256,10 +257,12 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
         household = self.selectHHComboBox.currentLayer()
         household_fields = [field.name() for field in household.fields().toList()]
         # category = self.filterByCategoryComboBox.currentText()
-        pdra_fields = indicators.get_dict_of_indicator_codes_per_category()["Risk"]
+        pdra_fields = indicators.get_dict_of_indicator_names_per_category()["Risk"]
+        # pdra_fields = indicators.get_dict_of_indicator_codes_per_category()[category]
 
         fields = list(set(household_fields).intersection(pdra_fields))
-        fieldnames = [indicators.get_indicator_name_from_code(field) for field in fields]
+        # fieldnames = [indicators.get_indicator_name_from_code(field) for field in fields]
+        fieldnames = fields
 
         return sorted(fieldnames)
 
@@ -292,7 +295,7 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
         Perform join attributes by location (summary) [count]
         '''
         outfield = "{field}_HOUSEHOLDS".format(field=field)
-        field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+        field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
         parameters = {'INPUT': boundary,
                       'JOIN': household,
                       'PREDICATE': [0],
@@ -333,10 +336,10 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
         '''
 
         outfield = "{field}_{level}".format(field=field, level=level)
-        field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+        field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
         levels = ['LOW', 'MEDIUM', 'HIGH']
         for lvl in levels:
-            household.setSubsetString(u"{} = '{}'".format(field, lvl))
+            household.setSubsetString(u'"{}" = {}'.format(field, "'{}'".format(lvl)))
             parameters = {'INPUT': boundary,
                           'JOIN': household,
                           'PREDICATE': [0],

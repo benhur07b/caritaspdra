@@ -75,11 +75,14 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         self.capUnselectAllBtn.clicked.connect(self.capListWidget.clearSelection)
 
         # Populate the indicator widgets
-        self.catsListWidgets = [self.capListWidget, self.vulListWidget, self.capListWidget]
-        self.indicator_names_per_category = indicators.get_dict_of_indicator_names_per_category()
-        self.hazListWidget.addItems(sorted(self.indicator_names_per_category['Hazard']))
-        self.vulListWidget.addItems(sorted(self.indicator_names_per_category['Vulnerability']))
-        self.capListWidget.addItems(sorted(self.indicator_names_per_category['Capacity']))
+        # self.catsListWidgets = [self.capListWidget, self.vulListWidget, self.capListWidget]
+        # self.indicator_names_per_category = indicators.get_dict_of_indicator_names_per_category()
+        # self.hazListWidget.addItems(sorted(self.indicator_names_per_category['Hazard']))
+        # self.vulListWidget.addItems(sorted(self.indicator_names_per_category['Vulnerability']))
+        # self.capListWidget.addItems(sorted(self.indicator_names_per_category['Capacity']))
+
+        self.selectHHComboBox.currentIndexChanged[str].connect(self.change_household)
+        self.change_household()
 
 
     def get_selected_indicator_codes(self):
@@ -192,7 +195,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                                          haz_indexes,
                                          haz_count,
                                          info_indexes,
-                                         "HAZ")
+                                         "Hazard")
 
         if len(vul_indexes) > 0:
             self.compute_category_values(household,
@@ -200,7 +203,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                                          vul_indexes,
                                          vul_count,
                                          info_indexes,
-                                         "VUL")
+                                         "Vulnerability")
 
         if len(cap_indexes) > 0:
             self.compute_category_values(household,
@@ -208,7 +211,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                                          cap_indexes,
                                          cap_count,
                                          info_indexes,
-                                         "CAP")
+                                         "Capacity")
 
         if (len(haz_indexes) > 0) and (len(vul_indexes) > 0) and (len(cap_indexes) > 0):
             self.compute_risk(household,
@@ -216,7 +219,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                               cat_indexes,
                               cat_counts,
                               info_indexes,
-                              ["HAZ", "VUL", "CAP", "RISK"]
+                              ["Hazard", "Vulnerability", "Capacity", "Risk"]
                               )
 
         if len(haz_indexes + vul_indexes + cap_indexes) == 0:
@@ -238,18 +241,18 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         copy_vector_layer(household, name, "Point")
         layer = QgsProject.instance().mapLayersByName(name)[0]
 
-        res = layer.dataProvider().addAttributes([QgsField("{}_TOTAL".format(cat), QVariant.Double, 'double', 4, 2)])
+        res = layer.dataProvider().addAttributes([QgsField("Total {}".format(cat.capitalize()), QVariant.Double, 'double', 4, 2)])
         layer.updateFields()
 
-        res = layer.dataProvider().addAttributes([QgsField("{}_NORM".format(cat), QVariant.Double, 'double', 4, 2)])
+        res = layer.dataProvider().addAttributes([QgsField("Normalized {}".format(cat.capitalize()), QVariant.Double, 'double', 4, 2)])
         layer.updateFields()
 
-        res = layer.dataProvider().addAttributes([QgsField("{}_LEVEL".format(cat), QVariant.String)])
+        res = layer.dataProvider().addAttributes([QgsField("Level of {}".format(cat.capitalize()), QVariant.String)])
         layer.updateFields()
 
-        total_field = layer.fields().indexFromName("{}_TOTAL".format(cat))
-        norm_field = layer.fields().indexFromName("{}_NORM".format(cat))
-        level_field = layer.fields().indexFromName("{}_LEVEL".format(cat))
+        total_field = layer.fields().indexFromName("Total {}".format(cat.capitalize()))
+        norm_field = layer.fields().indexFromName("Normalized {}".format(cat.capitalize()))
+        level_field = layer.fields().indexFromName("Level of {}".format(cat.capitalize()))
 
         '''Compute for Category Total and Level'''
         features = layer.getFeatures()
@@ -287,18 +290,18 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         retain_fields(layer, info_indexes + [norm_field, total_field, level_field])
 
         '''Add symbology (color LOW-MEDIUM-HIGH)'''
-        if cat == "CAP":
+        if cat == "Capacity":
             # self.add_symbology(layer,
             #                    cat,
             #                    RISK_COLORS_INV)
 
             add_categorized_symbology(layer,
-                                      "{}_LEVEL".format(cat),
+                                      "Level of {}".format(cat.capitalize()),
                                       RISK_COLORS_INV)
 
         else:
             add_categorized_symbology(layer,
-                                      "{}_LEVEL".format(cat),
+                                      "Level of {}".format(cat.capitalize()),
                                       RISK_COLORS)
 
 
@@ -319,29 +322,29 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
 
         '''Category fields'''
         for cat in cats[:3]:
-            res = layer.dataProvider().addAttributes([QgsField("{}_TOTAL".format(cat), QVariant.Double, 'double', 4, 2)])
+            res = layer.dataProvider().addAttributes([QgsField("Total {}".format(cat.capitalize()), QVariant.Double, 'double', 4, 2)])
             layer.updateFields()
 
-            res = layer.dataProvider().addAttributes([QgsField("{}_NORM".format(cat), QVariant.Double, 'double', 4, 2)])
+            res = layer.dataProvider().addAttributes([QgsField("Normalized {}".format(cat.capitalize()), QVariant.Double, 'double', 4, 2)])
             layer.updateFields()
 
-            res = layer.dataProvider().addAttributes([QgsField("{}_LEVEL".format(cat), QVariant.String)])
+            res = layer.dataProvider().addAttributes([QgsField("Level of {}".format(cat.capitalize()), QVariant.String)])
             layer.updateFields()
 
         for cat in cats[:3]:
-            total_fields[cat] = layer.fields().indexFromName("{}_TOTAL".format(cat))
-            norm_fields[cat] = layer.fields().indexFromName("{}_NORM".format(cat))
-            level_fields[cat] = layer.fields().indexFromName("{}_LEVEL".format(cat))
+            total_fields[cat] = layer.fields().indexFromName("Total {}".format(cat.capitalize()))
+            norm_fields[cat] = layer.fields().indexFromName("Normalized {}".format(cat.capitalize()))
+            level_fields[cat] = layer.fields().indexFromName("Level of {}".format(cat.capitalize()))
 
         '''Risk fields'''
-        res = layer.dataProvider().addAttributes([QgsField("RISK_NORM", QVariant.Double, 'double', 4, 2)])
+        res = layer.dataProvider().addAttributes([QgsField("Normalized Risk", QVariant.Double, 'double', 4, 2)])
         layer.updateFields()
 
-        res = layer.dataProvider().addAttributes([QgsField("RISK_LEVEL", QVariant.String)])
+        res = layer.dataProvider().addAttributes([QgsField("Level of Risk", QVariant.String)])
         layer.updateFields()
 
-        norm_field = layer.fields().indexFromName("RISK_NORM")
-        level_field = layer.fields().indexFromName("RISK_LEVEL")
+        norm_field = layer.fields().indexFromName("Normalized Risk")
+        level_field = layer.fields().indexFromName("Level of Risk")
 
         '''Edit attribute table'''
         features = layer.getFeatures()
@@ -384,41 +387,41 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
             risk_norm = ((haz_total + vul_total)/cap_total)/((cat_counts["Hazard"] + cat_counts["Vulnerability"]))
             # risk_level = risk_total/cat_counts["Risk"]
 
-            f[total_fields["HAZ"]] = haz_total
-            f[total_fields["VUL"]] = vul_total
-            f[total_fields["CAP"]] = cap_total
+            f[total_fields["Hazard"]] = haz_total
+            f[total_fields["Vulnerability"]] = vul_total
+            f[total_fields["Capacity"]] = cap_total
 
-            f[norm_fields["HAZ"]] = haz_norm
-            f[norm_fields["VUL"]] = vul_norm
-            f[norm_fields["CAP"]] = cap_norm
+            f[norm_fields["Hazard"]] = haz_norm
+            f[norm_fields["Vulnerability"]] = vul_norm
+            f[norm_fields["Capacity"]] = cap_norm
             f[norm_field] = risk_norm
 
             if haz_norm < 0.50:
-                f[level_fields["HAZ"]] = "LOW"
+                f[level_fields["Hazard"]] = "LOW"
 
             elif haz_norm >= 0.50 and haz_norm <= 0.75:
-                f[level_fields["HAZ"]] = "MEDIUM"
+                f[level_fields["Hazard"]] = "MEDIUM"
 
             else:
-                f[level_fields["HAZ"]] = "HIGH"
+                f[level_fields["Hazard"]] = "HIGH"
 
             if vul_norm < 0.50:
-                f[level_fields["VUL"]] = "LOW"
+                f[level_fields["Vulnerability"]] = "LOW"
 
             elif vul_norm >= 0.50 and vul_norm <= 0.75:
-                f[level_fields["VUL"]] = "MEDIUM"
+                f[level_fields["Vulnerability"]] = "MEDIUM"
 
             else:
-                f[level_fields["VUL"]] = "HIGH"
+                f[level_fields["Vulnerability"]] = "HIGH"
 
             if cap_norm < 0.50:
-                f[level_fields["CAP"]] = "LOW"
+                f[level_fields["Capacity"]] = "LOW"
 
             elif cap_norm >= 0.50 and cap_norm <= 0.75:
-                f[level_fields["CAP"]] = "MEDIUM"
+                f[level_fields["Capacity"]] = "MEDIUM"
 
             else:
-                f[level_fields["CAP"]] = "HIGH"
+                f[level_fields["Capacity"]] = "HIGH"
 
             if risk_norm < 0.25:
                 f[level_field] = "LOW"
@@ -437,5 +440,37 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                       info_indexes + [norm_field, level_field] + list(norm_fields.values()) + list(total_fields.values()) + list(level_fields.values()))
 
         add_categorized_symbology(layer,
-                                  "RISK_LEVEL",
+                                  "Level of Risk",
                                   RISK_COLORS)
+
+
+    def get_pdra_indicators_in_hh_layer(self):
+        """Gets the PDRA indicators present in the hh_layer"""
+
+        household = self.selectHHComboBox.currentLayer()
+        household_fields = [field.name() for field in household.fields().toList()]
+        haz_fields = indicators.get_dict_of_indicator_names_per_category()["Hazard"]
+        vul_fields = indicators.get_dict_of_indicator_names_per_category()["Vulnerability"]
+        cap_fields = indicators.get_dict_of_indicator_names_per_category()["Capacity"]
+        # pdra_fields = indicators.get_dict_of_indicator_codes_per_category()[category]
+
+         # = list(set(household_fields).intersection(pdra_fields))
+        # fieldnames = [indicators.get_indicator_name_from_code(field) for field in fields]
+        # fieldnames = fields
+
+        return {"Hazard": sorted(list(set(household_fields).intersection(haz_fields))),
+                "Vulnerability": sorted(list(set(household_fields).intersection(vul_fields))),
+                "Capacity": sorted(list(set(household_fields).intersection(cap_fields)))}
+
+
+    def change_household(self):
+        """Change the contents of the Select Field Combo Box when the household layer is changed"""
+
+        self.hazListWidget.clear()
+        self.vulListWidget.clear()
+        self.capListWidget.clear()
+
+        fieldnames = self.get_pdra_indicators_in_hh_layer()
+        self.hazListWidget.addItems(fieldnames["Hazard"])
+        self.vulListWidget.addItems(fieldnames["Vulnerability"])
+        self.capListWidget.addItems(fieldnames["Capacity"])

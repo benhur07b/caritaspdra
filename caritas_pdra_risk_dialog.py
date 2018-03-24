@@ -43,6 +43,7 @@ from .caritas_pdra_risk_dialog_ui import Ui_CaritasPDRARiskDialog
 
 # import the PDRA indicators
 from .caritas_pdra_utilities import *
+from .caritas_pdra_constants import *
 
 indicators_path = os.path.dirname(__file__) + '/indicators/pdra-household-indicators.csv'
 indicators = Indicators(indicators_path)
@@ -196,6 +197,10 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
                               ["HAZ", "VUL", "CAP", "RISK"]
                               )
 
+        if len(haz_indexes + vul_indexes + cap_indexes) == 0:
+            msg = "No indicators selected. Will close dialog. Try again."
+            QMessageBox.critical(self.parent, "WARNING", msg)
+
         self.close()
 
 
@@ -234,15 +239,11 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
 
             for index in cat_indexes:
                 try:
-                    # new
-                    # print(layer.fields().at(index).name())
                     value = float(indicators.get_value_from_code(layer.fields().at(index).name()))
-                    # print(value)
                     total += (float(attr[index]) * value)
                 except (TypeError, ValueError) as e:
                     total += 0
 
-            # f[total_field] = total/cat_count
             cat_norm = total/cat_count
 
             f[total_field] = total
@@ -265,14 +266,18 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
 
         '''Add symbology (color LOW-MEDIUM-HIGH)'''
         if cat == "CAP":
-            self.add_symbology(layer,
-                               cat,
-                               RISK_COLORS_INV)
+            # self.add_symbology(layer,
+            #                    cat,
+            #                    RISK_COLORS_INV)
+
+            add_categorized_symbology(layer,
+                                      "{}_LEVEL".format(cat),
+                                      RISK_COLORS_INV)
 
         else:
-            self.add_symbology(layer,
-                               cat,
-                               RISK_COLORS)
+            add_categorized_symbology(layer,
+                                      "{}_LEVEL".format(cat),
+                                      RISK_COLORS)
 
 
     def compute_risk(self,
@@ -366,11 +371,6 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
             f[norm_fields["CAP"]] = cap_norm
             f[norm_field] = risk_norm
 
-            # f[total_fields["HAZ"]] = haz_level
-            # f[total_fields["VUL"]] = vul_level
-            # f[total_fields["CAP"]] = cap_level
-            # f[total_fields["RISK"]] = risk_level
-
             if haz_norm < 0.50:
                 f[level_fields["HAZ"]] = "LOW"
 
@@ -414,27 +414,6 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         retain_fields(layer,
                       info_indexes + [norm_field, level_field] + list(norm_fields.values()) + list(total_fields.values()) + list(level_fields.values()))
 
-        self.add_symbology(layer,
-                           "RISK",
-                           RISK_COLORS)
-
-
-    def add_symbology(self,
-                      layer,
-                      cat,
-                      colors):
-        '''Add symbology (color LOW-MEDIUM-HIGH)'''
-
-        levels = colors
-
-        categories = []
-
-        for level, color, label in levels:
-            sym = QgsSymbol.defaultSymbol(layer.geometryType())
-            sym.setColor(QColor(color))
-            category = QgsRendererCategory(level, sym, label)
-            categories.append(category)
-
-        renderer = QgsCategorizedSymbolRenderer("{}_LEVEL".format(cat), categories)
-        layer.setRenderer(renderer)
-        layer.triggerRepaint()
+        add_categorized_symbology(layer,
+                                  "RISK_LEVEL",
+                                  RISK_COLORS)

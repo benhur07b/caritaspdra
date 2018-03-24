@@ -31,19 +31,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
 from qgis.core import *
+import processing
+
 import os
 import csv
 import re
-
-
-# COLOR SCHEME
-RISK_COLORS = [("LOW", "green", "LOW"),
-               ("MEDIUM", "orange", "MEDIUM"),
-               ("HIGH", "red", "HIGH")]
-
-RISK_COLORS_INV = [("LOW", "red", "LOW"),
-                   ("MEDIUM", "orange", "MEDIUM"),
-                   ("HIGH", "green", "HIGH")]
 
 
 class Indicators():
@@ -230,3 +222,111 @@ def retain_fields(layer,
 
     res = layer.dataProvider().deleteAttributes(to_delete)
     layer.updateFields()
+
+
+def add_graduated_symbology(layer,
+                            fieldName):
+    """Add graduated symbology to layer"""
+
+    sym = QgsSymbol.defaultSymbol(layer.geometryType())
+    color_ramp = QgsGradientColorRamp(QColor("yellow"), QColor("red"))
+    mode = QgsGraduatedSymbolRenderer.Pretty
+    renderer = QgsGraduatedSymbolRenderer.createRenderer(layer, fieldName, 3, mode, sym, color_ramp)
+    layer.setRenderer(renderer)
+    layer.triggerRepaint()
+
+
+def add_categorized_symbology(layer,
+                              field,
+                              colors):
+    '''Add categorized symbology'''
+
+    categories = []
+    # svg = 'img/svg/accomodation-house.svg'
+    # svg_sym = QgsSvgMarkerSymbolLayer(svg, 8)
+
+    for level, color, label in colors:
+        sym = QgsSymbol.defaultSymbol(layer.geometryType())
+        sym.setColor(QColor(color))
+        category = QgsRendererCategory(level, sym, label)
+        categories.append(category)
+
+    renderer = QgsCategorizedSymbolRenderer(field, categories)
+    layer.setRenderer(renderer)
+    layer.triggerRepaint()
+
+
+def add_ranged_symbology(layer,
+                         field,
+                         colors):
+    '''Add categorized symbology'''
+
+    ranges = []
+    # svg = 'img/svg/accomodation-house.svg'
+    # svg_sym = QgsSvgMarkerSymbolLayer(svg, 8)
+
+    for lower, upper, color, label in colors:
+        sym = QgsSymbol.defaultSymbol(layer.geometryType())
+        sym.setColor(QColor(color))
+        rng = QgsRendererRange(lower, upper, sym, label)
+        ranges.append(rng)
+
+    renderer = QgsGraduatedSymbolRenderer(field, ranges)
+    layer.setRenderer(renderer)
+    layer.triggerRepaint()
+
+
+def add_labels(layer,
+               fieldName):
+    """Add label to layer"""
+
+    text = QgsTextFormat()
+    text.setColor(QColor("black"))
+    text.setSize(12)
+    palayer = QgsPalLayerSettings()
+    palayer.fieldName = fieldName
+    palayer.placement = QgsPalLayerSettings.OverPoint
+    palayer.drawLabels = True
+    palayer.isExpression = True
+    palayer.setFormat(text)
+
+    layer.setLabelsEnabled(True)
+    layer.setLabeling(QgsVectorLayerSimpleLabeling(palayer))
+    layer.triggerRepaint()
+
+
+def refactor_fields(layer,
+                    names):
+    """Rename field"""
+
+    fields = [{'name': f.name(), 'type': f.type(), 'length': f.length(), 'precision': f.precision(), 'expression': '"{}"'.format(f.name())} for f in layer.fields()]
+    oldnames = [n[0] for n in names]
+    newnames = [n[1] for n in names]
+    for f in fields:
+        if f['name'] in oldnames:
+            i = oldnames.index(f['name'])
+            f['name'] = newnames[i]
+
+    parameters = {'INPUT': layer,
+                  'FIELDS_MAPPING': fields,
+                  'OUTPUT': 'memory:'}
+
+    processing.runAndLoadResults("qgis:refactorfields", parameters)
+
+
+def set_null_to_zero(layer,
+                     fieldName):
+
+    field = layer.fields().indexFromName(fieldName)
+    features = layer.getFeatures()
+    for f in features:
+        layer.startEditing()
+        attr = f.attributes()
+
+        try:
+            x = float(f[field])
+        except (TypeError, ValueError) as e:
+            f[field] = 0
+
+        layer.updateFeature(f)
+    layer.commitChanges()

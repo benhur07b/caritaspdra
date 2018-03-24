@@ -81,3 +81,7 @@ C_SKILLS_2,Skills (Carpentry),Capacity,1
 C_SKILLS_3,Skills (Swimming),Capacity,1
 C_SKILLS_0,Skills (Others),Capacity,1
 C_SKILLS_X,Skills (None),Capacity,0
+HAZ_LEVEL,Level of Hazard,Risk,0
+VUL_LEVEL,Level of Vulnerability,Risk,0
+CAP_LEVEL,Level of Capacity,Risk,0
+RISK_LEVEL,Level of Risk,Risk,0

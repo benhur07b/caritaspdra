@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CaritasPDRAStatisticsDialog</class>
- <widget class="QDialog" name="CaritasPDRAStatisticsDialog">
+ <class>CaritasPDRASummaryRiskDialog</class>
+ <widget class="QDialog" name="CaritasPDRASummaryRiskDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>720</width>
-    <height>540</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>720</width>
-    <height>540</height>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>720</width>
-    <height>540</height>
+    <height>600</height>
    </size>
   </property>
   <property name="font">
@@ -34,11 +34,11 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Caritas PDRA Summary Statistics</string>
+   <string>Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/plugins/caritas_pdra/img/icons/icon-statistics.png</normaloff>:/plugins/caritas_pdra/img/icons/icon-statistics.png</iconset>
+    <normaloff>:/plugins/caritas_pdra/img/icons/icon-summary-risk.png</normaloff>:/plugins/caritas_pdra/img/icons/icon-summary-risk.png</iconset>
   </property>
   <property name="modal">
    <bool>false</bool>
@@ -47,7 +47,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>470</y>
+     <y>530</y>
      <width>321</width>
      <height>51</height>
     </rect>
@@ -83,7 +83,7 @@
    <property name="geometry">
     <rect>
      <x>640</x>
-     <y>470</y>
+     <y>530</y>
      <width>71</width>
      <height>51</height>
     </rect>
@@ -99,7 +99,7 @@
    <property name="geometry">
     <rect>
      <x>540</x>
-     <y>430</y>
+     <y>490</y>
      <width>171</width>
      <height>31</height>
     </rect>
@@ -129,7 +129,7 @@
     <string>Siguraduhing ang coordinate reference system (hal. EPSG: 32651) ng household at admin layers ay pareho</string>
    </property>
    <property name="text">
-    <string>Select Household Layer with PDRA Indicators</string>
+    <string>Select Household Layer with Risk Levels</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -150,7 +150,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Piliin ang household layer na naglalaman ng mga PDRA indicators</string>
+    <string>Piliin ang household layer na naglalaman ng mga Risk Levels (Ito ang mga resulta ng Caritas PDRA Risk Computation)</string>
    </property>
    <property name="statusTip">
     <string/>
@@ -162,13 +162,13 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="selectAdminLabel">
+  <widget class="QLabel" name="selectBoundaryLabel">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>60</y>
-     <width>181</width>
-     <height>31</height>
+     <y>50</y>
+     <width>191</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="font">
@@ -180,13 +180,13 @@
     <string>Siguraduhing ang coordinate reference system (hal. EPSG: 32651) ng household at admin layers ay pareho</string>
    </property>
    <property name="text">
-    <string>Select the Admin boundary layer</string>
+    <string>Select the Boundary Layer for Grouping the Households</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QgsMapLayerComboBox" name="selectAdminComboBox">
+  <widget class="QgsMapLayerComboBox" name="selectBoundaryComboBox">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -217,7 +217,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>110</y>
+     <y>160</y>
      <width>181</width>
      <height>31</height>
     </rect>
@@ -228,7 +228,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Filter Indicators by Category</string>
+    <string>Filter Level To Show</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -238,7 +238,7 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>110</y>
+     <y>160</y>
      <width>501</width>
      <height>31</height>
     </rect>
@@ -246,18 +246,33 @@
    <property name="toolTip">
     <string>Pumili ng kategorya</string>
    </property>
+   <item>
+    <property name="text">
+     <string>LOW</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>MEDIUM</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>HIGH</string>
+    </property>
+   </item>
   </widget>
   <widget class="QListWidget" name="summariesList">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>190</y>
-     <width>201</width>
+     <x>370</x>
+     <y>250</y>
+     <width>341</width>
      <height>181</height>
     </rect>
    </property>
    <property name="toolTip">
-    <string>Piliin ang mga istatistika na kukwentahin</string>
+    <string>Piliin ang mga istatistikang kukwentahin</string>
    </property>
    <property name="editTriggers">
     <set>QAbstractItemView::NoEditTriggers</set>
@@ -267,66 +282,35 @@
    </property>
    <item>
     <property name="text">
-     <string>count</string>
+     <string>Number of Households</string>
+    </property>
+    <property name="toolTip">
+     <string>Bilang ng mga sambahayan</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>unique</string>
+     <string>Number of Households at Risk</string>
+    </property>
+    <property name="toolTip">
+     <string>Bilang ng mga sambahayan na nasa ilalim ng napiling lebel ng Panganib (Risk Level)</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>min</string>
+     <string>Percentage of Households at Risk</string>
     </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>max</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>range</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>sum</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>mean</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>median</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>stddev</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>majority</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>minority</string>
+    <property name="toolTip">
+     <string>Porsyento ng mga sambahayan na nasa ilalim ng napiling lebel ng Panganib (Risk Level)</string>
     </property>
    </item>
   </widget>
   <widget class="QLabel" name="summariesToCalculateLabel">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>160</y>
-     <width>181</width>
+     <x>370</x>
+     <y>220</y>
+     <width>341</width>
      <height>31</height>
     </rect>
    </property>
@@ -336,7 +320,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Summaries to Calculate</string>
+    <string>Select Summaries to Compute</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -346,8 +330,8 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>160</y>
-     <width>181</width>
+     <y>220</y>
+     <width>351</width>
      <height>31</height>
     </rect>
    </property>
@@ -357,7 +341,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Select Fields to Summarize</string>
+    <string>Select Value to Summarize</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -367,9 +351,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>190</y>
-     <width>471</width>
-     <height>181</height>
+     <y>250</y>
+     <width>341</width>
+     <height>271</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -379,15 +363,18 @@
     <set>QAbstractItemView::NoEditTriggers</set>
    </property>
    <property name="selectionMode">
-    <enum>QAbstractItemView::ExtendedSelection</enum>
+    <enum>QAbstractItemView::SingleSelection</enum>
+   </property>
+   <property name="sortingEnabled">
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QLabel" name="note">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>410</y>
-     <width>491</width>
+     <x>210</x>
+     <y>80</y>
+     <width>501</width>
      <height>31</height>
     </rect>
    </property>
@@ -403,7 +390,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;* If only one field and summary statistic is selected, the resulting layer will be labeled with the results of the summarization&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;* Make sure that the coordinate reference system (e.g. EPSG:32651) of the risk level and boundary layer are the same.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="scaledContents">
     <bool>false</bool>
@@ -422,7 +409,7 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>380</y>
+     <y>440</y>
      <width>91</width>
      <height>25</height>
     </rect>
@@ -435,7 +422,7 @@
    <property name="geometry">
     <rect>
      <x>620</x>
-     <y>380</y>
+     <y>440</y>
      <width>91</width>
      <height>25</height>
     </rect>
@@ -444,34 +431,122 @@
     <string>Unselect All</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="selectAllFieldsBtn">
+  <widget class="QLabel" name="selectBoundaryIDFieldLabel">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>380</y>
-     <width>91</width>
-     <height>25</height>
+     <y>100</y>
+     <width>141</width>
+     <height>51</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Siguraduhing walang boundary o barangay na pareho ang pangalan</string>
+   </property>
    <property name="text">
-    <string>Select All</string>
+    <string>Unique Boundary ID (e.g. Barangay ID)</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="unselectAllFieldsBtn">
+  <widget class="QgsFieldComboBox" name="selectBoundaryIDFieldComboBox">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>380</y>
-     <width>91</width>
-     <height>25</height>
+     <x>210</x>
+     <y>110</y>
+     <width>501</width>
+     <height>27</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>Pillin ang field kung saan nakalagay ang unique na ID ng boundary (e.g. BarangayID, MuniCityID)</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="note_2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>130</y>
+     <width>501</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>5</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
    <property name="text">
-    <string>Unselect All</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;* Make sure that the boundary identification is unique for each feature in the layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="scaledContents">
+    <bool>false</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+   <property name="margin">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="note_3">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>30</y>
+     <width>501</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>5</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;* Result of the Caritas PDRA Risk Computation Tool&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="scaledContents">
+    <bool>false</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+   <property name="margin">
+    <number>4</number>
    </property>
   </widget>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>

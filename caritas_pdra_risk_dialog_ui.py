@@ -148,7 +148,7 @@ class Ui_CaritasPDRARiskDialog(object):
 
     def retranslateUi(self, CaritasPDRARiskDialog):
         _translate = QtCore.QCoreApplication.translate
-        CaritasPDRARiskDialog.setWindowTitle(_translate("CaritasPDRARiskDialog", "Caritas PDRA Risk Computation"))
+        CaritasPDRARiskDialog.setWindowTitle(_translate("CaritasPDRARiskDialog", "Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)"))
         self.selectHHComboBox.setToolTip(_translate("CaritasPDRARiskDialog", "Piliin ang household layer na naglalaman ng PDRA indicators"))
         self.selectHHComboBox.setWhatsThis(_translate("CaritasPDRARiskDialog", "Select the household point layer with PDRA indicators"))
         self.selectHHLabel.setText(_translate("CaritasPDRARiskDialog", "Select Household Layer with PDRA Indicators"))

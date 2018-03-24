@@ -207,9 +207,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-risk.png'
         self.add_action(
             icon,
-            text=self.tr(u'Perform Hazard, Vulnerability, Capacity, and Risk Computation using PDRA Data'),
-            status_tip=self.tr(u'Perform Hazard, Vulnerability, Capacity, and Risk Computation using PDRA Data'),
-            whats_this=self.tr(u'Perform Hazard, Vulnerability, Capacity, and Risk Computation using PDRA Data'),
+            text=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
+            status_tip=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
+            whats_this=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
             callback=self.caritas_pdra_risk,
             parent=self.iface.mainWindow()
         )
@@ -238,9 +238,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-summary.png'
         self.add_action(
             icon,
-            text=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
-            status_tip=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
-            whats_this=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
+            text=self.tr(u'Summarize or Aggregate PDRA Data by Location (shp-vesion)'),
+            status_tip=self.tr(u'Summarize or Aggregate PDRA Data by Location (shp-vesion)'),
+            whats_this=self.tr(u'Summarize or Aggregate PDRA Data by Location (shp-vesion)'),
             callback=self.caritas_pdra_summary,
             parent=self.iface.mainWindow()
         )
@@ -269,9 +269,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-summary-risk.png'
         self.add_action(
             icon,
-            text=self.tr(u'Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'),
-            status_tip=self.tr(u'Compute Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'),
-            whats_this=self.tr(u'Compute Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'),
+            text=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
+            status_tip=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
+            whats_this=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
             callback=self.caritas_pdra_summary_risk,
             parent=self.iface.mainWindow()
         )

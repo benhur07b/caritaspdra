@@ -187,7 +187,7 @@ class Ui_CaritasPDRASummaryRiskDialog(object):
 
     def retranslateUi(self, CaritasPDRASummaryRiskDialog):
         _translate = QtCore.QCoreApplication.translate
-        CaritasPDRASummaryRiskDialog.setWindowTitle(_translate("CaritasPDRASummaryRiskDialog", "Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data"))
+        CaritasPDRASummaryRiskDialog.setWindowTitle(_translate("CaritasPDRASummaryRiskDialog", "Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data (shp-version)"))
         self.label.setText(_translate("CaritasPDRASummaryRiskDialog", "<html><head/><body><p><span style=\" font-size:6pt;\">This plugin was made possible due to the efforts of NASSA/Caritas Philippines.</span></p></body></html>"))
         self.buttonBox.setToolTip(_translate("CaritasPDRASummaryRiskDialog", "Perform Statistics Computation"))
         self.selectHHLabel.setToolTip(_translate("CaritasPDRASummaryRiskDialog", "Siguraduhing ang coordinate reference system (hal. EPSG: 32651) ng household at admin layers ay pareho"))

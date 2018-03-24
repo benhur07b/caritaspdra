@@ -291,7 +291,7 @@
    </item>
    <item>
     <property name="text">
-     <string>Number of Persons with Indicator Present</string>
+     <string>Number of Persons with Indicator</string>
     </property>
     <property name="toolTip">
      <string>Bilang ng mga tao na positibo sa napiling indicator</string>

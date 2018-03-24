@@ -199,7 +199,7 @@ class Ui_CaritasPDRASummaryDialog(object):
         item.setText(_translate("CaritasPDRASummaryDialog", "Percentage of Households where Indicator is Present"))
         item.setToolTip(_translate("CaritasPDRASummaryDialog", "Porsyento ng mga sambahayan na positibo sa napiling indicator"))
         item = self.summariesList.item(3)
-        item.setText(_translate("CaritasPDRASummaryDialog", "Number of Persons with Indicator Present"))
+        item.setText(_translate("CaritasPDRASummaryDialog", "Number of Persons with Indicator"))
         item.setToolTip(_translate("CaritasPDRASummaryDialog", "Bilang ng mga tao na positibo sa napiling indicator"))
         self.summariesList.setSortingEnabled(__sortingEnabled)
         self.summariesToCalculateLabel.setText(_translate("CaritasPDRASummaryDialog", "Select Summaries to Compute"))

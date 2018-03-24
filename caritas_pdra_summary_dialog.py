@@ -118,8 +118,8 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                     Perform join attributes by location (summary) [count] on filtered layer
                     '''
 
-                    outfield = "{field}_HH_WITH_INDICATOR".format(field=field)
-                    field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+                    outfield = "{field}_HOUSEHOLDS_WITH_INDICATOR".format(field=field)
+                    field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
                     household.setSubsetString(u"{} > 0".format(field))
 
                     parameters = {'INPUT': boundary,
@@ -221,17 +221,17 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                         layer_3.updateFeature(f)
                     layer_3.commitChanges()
 
-                    refactor_fields(layer_3, [[i_count, "{}_HOUSEHOLDS".format(field)], [i_count_2, "{}_HH_WITH_INDICATOR".format(field)]])
+                    refactor_fields(layer_3, [[i_count, "{}_HOUSEHOLDS".format(field)], [i_count_2, "{}_HOUSEHOLDS_WITH_INDICATOR".format(field)]])
                     layer = QgsProject.instance().mapLayersByName("Refactored")[0]
                     layer.setName("{} ({} - {})".format(household.name(), field, summary[1]))
 
                     QgsProject.instance().removeMapLayers([layer_3.id()])
 
                     add_ranged_symbology(layer,
-                                         "IF({} IS NULL, 0, {})".format(i_percent, i_percent),
+                                         'IF("{}" IS NULL, 0, "{}")'.format(i_percent, i_percent),
                                          PERCENTAGE_COLORS)
                     add_labels(layer,
-                               "IF({} IS NULL, '0%', concat(format_number(to_string({}), 0), '%'))".format(i_percent, i_percent))
+                               'IF("{i_percent}" IS NULL, {zero}, concat(format_number(to_string("{i_percent}"), 0), {percent}))'.format(i_percent=i_percent, zero=str("'0%'"), percent=str("'%'")))
 
 
                 if summary[0] == 3:
@@ -240,22 +240,32 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                     Perform join attributes by location (summary) [sum]
                     '''
 
-                    outfield = "{field}_PERSONS_WITH_INDICATOR".format(field=field)
-                    field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+                    mem_field = "_MEM_"
+                    mem_fields = [f.name() for f in household.fields().toList() if mem_field in f.name()]
+
+                    household.setSubsetString(u'"{}" > 0'.format(field))
+
+                    # outfield = "{field}_PERSONS_WITH_INDICATOR".format(field=field)
+                    outfield = "{m}_PERSONS_WITH_INDICATOR".format(m=mem_fields[len(mem_fields)-1])
+                    field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
                     parameters = {'INPUT': boundary,
                                   'JOIN': household,
                                   'PREDICATE': [0],
-                                  'JOIN_FIELDS': fields,
+                                  'JOIN_FIELDS': mem_fields,
                                   'SUMMARIES': [5],
                                   'DISCARD_NONMATCHING': False,
                                   'OUTPUT': 'memory:'}
 
                     processing.runAndLoadResults("qgis:joinbylocationsummary", parameters)
                     layer_1 = QgsProject.instance().mapLayersByName("Joined layer")[0]
-                    refactor_fields(layer_1, [["{}_sum".format(field), outfield]])
+                    refactor_fields(layer_1, [["{}_sum".format(m), "{}_PERSONS_WITH_INDICATOR".format(m)] for m in mem_fields])
+                    # refactor_fields(layer_1, [["{}_sum".format(field), outfield]])
                     QgsProject.instance().removeMapLayers([layer_1.id()])
+
                     layer = QgsProject.instance().mapLayersByName("Refactored")[0]
                     layer.setName("{} ({} - {})".format(household.name(), field, summary[1]))
+
+                    household.setSubsetString(u'')
 
                     add_ranged_symbology(layer,
                                          field_expression,
@@ -355,7 +365,7 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
         Perform join attributes by location (summary) [count]
         '''
         outfield = "{field}_HOUSEHOLDS".format(field=field)
-        field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+        field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
         parameters = {'INPUT': boundary,
                       'JOIN': household,
                       'PREDICATE': [0],

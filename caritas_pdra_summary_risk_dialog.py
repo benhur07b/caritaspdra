@@ -222,10 +222,10 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                         QgsProject.instance().removeMapLayers([layer_2.id()])
 
                     add_ranged_symbology(layer,
-                                         "IF ({outfield} IS NULL, 0, {outfield})".format(outfield=outfield),
+                                         'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield),
                                          PERCENTAGE_COLORS)
                     add_labels(layer,
-                               "IF({outfield} IS NULL, '0%', concat(format_number(to_string({outfield}), 0), '%'))".format(outfield=outfield))
+                               'IF("{outfield}" IS NULL, {zero}, concat(format_number(to_string("{outfield}"), 0), {percent}))'.format(outfield=outfield, zero=str("'0%'"), percent=str("'%'")))
 
         except AssertionError:
             msg = "Must select an indicator and a summary to be computed. Will close dialog. Try again."
@@ -292,7 +292,7 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
         Perform join attributes by location (summary) [count]
         '''
         outfield = "{field}_HOUSEHOLDS".format(field=field)
-        field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+        field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
         parameters = {'INPUT': boundary,
                       'JOIN': household,
                       'PREDICATE': [0],
@@ -333,7 +333,7 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
         '''
 
         outfield = "{field}_{level}".format(field=field, level=level)
-        field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+        field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
         levels = ['LOW', 'MEDIUM', 'HIGH']
         for lvl in levels:
             household.setSubsetString(u"{} = '{}'".format(field, lvl))

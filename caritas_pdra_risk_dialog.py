@@ -75,11 +75,14 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         self.capUnselectAllBtn.clicked.connect(self.capListWidget.clearSelection)
 
         # Populate the indicator widgets
-        self.catsListWidgets = [self.capListWidget, self.vulListWidget, self.capListWidget]
-        self.indicator_names_per_category = indicators.get_dict_of_indicator_names_per_category()
-        self.hazListWidget.addItems(sorted(self.indicator_names_per_category['Hazard']))
-        self.vulListWidget.addItems(sorted(self.indicator_names_per_category['Vulnerability']))
-        self.capListWidget.addItems(sorted(self.indicator_names_per_category['Capacity']))
+        # self.catsListWidgets = [self.capListWidget, self.vulListWidget, self.capListWidget]
+        # self.indicator_names_per_category = indicators.get_dict_of_indicator_names_per_category()
+        # self.hazListWidget.addItems(sorted(self.indicator_names_per_category['Hazard']))
+        # self.vulListWidget.addItems(sorted(self.indicator_names_per_category['Vulnerability']))
+        # self.capListWidget.addItems(sorted(self.indicator_names_per_category['Capacity']))
+
+        self.selectHHComboBox.currentIndexChanged[str].connect(self.change_household)
+        self.change_household()
 
 
     def get_selected_indicator_codes(self):
@@ -417,3 +420,35 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         add_categorized_symbology(layer,
                                   "RISK_LEVEL",
                                   RISK_COLORS)
+
+
+    def get_pdra_indicators_in_hh_layer(self):
+        """Gets the PDRA indicators present in the hh_layer"""
+
+        household = self.selectHHComboBox.currentLayer()
+        household_fields = [field.name() for field in household.fields().toList()]
+        haz_fields = indicators.get_dict_of_indicator_codes_per_category()["Hazard"]
+        vul_fields = indicators.get_dict_of_indicator_codes_per_category()["Vulnerability"]
+        cap_fields = indicators.get_dict_of_indicator_codes_per_category()["Capacity"]
+        # pdra_fields = indicators.get_dict_of_indicator_codes_per_category()[category]
+
+         # = list(set(household_fields).intersection(pdra_fields))
+        # fieldnames = [indicators.get_indicator_name_from_code(field) for field in fields]
+        # fieldnames = fields
+
+        return {"Hazard": sorted(list(set(household_fields).intersection(haz_fields))),
+                "Vulnerability": sorted(list(set(household_fields).intersection(vul_fields))),
+                "Capacity": sorted(list(set(household_fields).intersection(cap_fields)))}
+
+
+    def change_household(self):
+        """Change the contents of the Select Field Combo Box when the household layer is changed"""
+
+        self.hazListWidget.clear()
+        self.vulListWidget.clear()
+        self.capListWidget.clear()
+
+        fieldnames = self.get_pdra_indicators_in_hh_layer()
+        self.hazListWidget.addItems(indicators.get_indicator_name_from_code(code) for code in fieldnames["Hazard"])
+        self.vulListWidget.addItems(indicators.get_indicator_name_from_code(code) for code in fieldnames["Vulnerability"])
+        self.capListWidget.addItems(indicators.get_indicator_name_from_code(code) for code in fieldnames["Capacity"])

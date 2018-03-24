@@ -336,7 +336,7 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
         field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
         levels = ['LOW', 'MEDIUM', 'HIGH']
         for lvl in levels:
-            household.setSubsetString(u"{} = '{}'".format(field, lvl))
+            household.setSubsetString(u'"{}" = {}'.format(field, "'{}'".format(lvl)))
             parameters = {'INPUT': boundary,
                           'JOIN': household,
                           'PREDICATE': [0],

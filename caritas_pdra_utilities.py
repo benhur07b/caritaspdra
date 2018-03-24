@@ -122,7 +122,7 @@ class Indicators():
 
     def get_value_from_name(self,
                             indicator_name):
-        """Returns the value of the indicator using the indicator code"""
+        """Returns the value of the indicator using the indicator name"""
 
         if indicator_name in self.get_indicator_names():  # if indicator_code exists, return the indicator_name
             return [i[3] for i in self.indicators_list if i[1] == indicator_name][0]

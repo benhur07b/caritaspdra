@@ -173,7 +173,7 @@ class Ui_CaritasPDRASummaryDialog(object):
 
     def retranslateUi(self, CaritasPDRASummaryDialog):
         _translate = QtCore.QCoreApplication.translate
-        CaritasPDRASummaryDialog.setWindowTitle(_translate("CaritasPDRASummaryDialog", "Summarize or Aggregate PDRA Data by Location (shp-vesion)"))
+        CaritasPDRASummaryDialog.setWindowTitle(_translate("CaritasPDRASummaryDialog", "Summarize or Aggregate PDRA Data by Location (gpkg-vesion)"))
         self.label.setText(_translate("CaritasPDRASummaryDialog", "<html><head/><body><p><span style=\" font-size:6pt;\">This plugin was made possible due to the efforts of NASSA/Caritas Philippines.</span></p></body></html>"))
         self.buttonBox.setToolTip(_translate("CaritasPDRASummaryDialog", "Perform Statistics Computation"))
         self.selectHHLabel.setToolTip(_translate("CaritasPDRASummaryDialog", "Siguraduhing ang coordinate reference system (hal. EPSG: 32651) ng household at admin layers ay pareho"))
@@ -199,7 +199,7 @@ class Ui_CaritasPDRASummaryDialog(object):
         item.setText(_translate("CaritasPDRASummaryDialog", "Percentage of Households where Indicator is Present"))
         item.setToolTip(_translate("CaritasPDRASummaryDialog", "Porsyento ng mga sambahayan na positibo sa napiling indicator"))
         item = self.summariesList.item(3)
-        item.setText(_translate("CaritasPDRASummaryDialog", "Number of Persons with Indicator Present"))
+        item.setText(_translate("CaritasPDRASummaryDialog", "Number of Persons with Indicator"))
         item.setToolTip(_translate("CaritasPDRASummaryDialog", "Bilang ng mga tao na positibo sa napiling indicator"))
         self.summariesList.setSortingEnabled(__sortingEnabled)
         self.summariesToCalculateLabel.setText(_translate("CaritasPDRASummaryDialog", "Select Summaries to Compute"))

@@ -118,9 +118,9 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                     Perform join attributes by location (summary) [count] on filtered layer
                     '''
 
-                    outfield = "{field}_HH_WITH_INDICATOR".format(field=field)
-                    field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
-                    household.setSubsetString(u"{} > 0".format(field))
+                    outfield = "{field}_HOUSEHOLDS_AFFECTED".format(field=field)
+                    field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
+                    household.setSubsetString(u'"{}" > 0'.format(field))
 
                     parameters = {'INPUT': boundary,
                                   'JOIN': household,
@@ -165,7 +165,7 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                     layer_1.setName("1")
 
                     # Get number of households with indicator
-                    household.setSubsetString(u"{} > 0".format(field))
+                    household.setSubsetString(u'"{}" > 0'.format(field))
 
                     parameters_2 = {'INPUT': boundary,
                                     'JOIN': household,
@@ -198,7 +198,7 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
 
                     i_count = "{}_count".format(field)
                     i_count_2 = "{}_count_2".format(field)
-                    i_percent = "{}_PERCENTAGE".format(field)
+                    i_percent = "{}_HOUSEHOLDS_PERCENTAGE".format(field)
 
                     res = layer_3.dataProvider().addAttributes([QgsField(i_percent, QVariant.Double, 'double', 4, 2)])
                     layer_3.updateFields()
@@ -221,41 +221,49 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                         layer_3.updateFeature(f)
                     layer_3.commitChanges()
 
-                    refactor_fields(layer_3, [[i_count, "{}_HOUSEHOLDS".format(field)], [i_count_2, "{}_HH_WITH_INDICATOR".format(field)]])
+                    refactor_fields(layer_3, [[i_count, "{}_HOUSEHOLDS".format(field)], [i_count_2, "{}_HOUSEHOLDS_AFFECTED".format(field)]])
                     layer = QgsProject.instance().mapLayersByName("Refactored")[0]
                     layer.setName("{} ({} - {})".format(household.name(), field, summary[1]))
 
                     QgsProject.instance().removeMapLayers([layer_3.id()])
 
                     add_ranged_symbology(layer,
-                                         "IF({} IS NULL, 0, {})".format(i_percent, i_percent),
+                                         'IF("{}" IS NULL, 0, "{}")'.format(i_percent, i_percent),
                                          PERCENTAGE_COLORS)
                     add_labels(layer,
-                               "IF({} IS NULL, '0%', concat(format_number(to_string({}), 0), '%'))".format(i_percent, i_percent))
-
+                               'IF("{i_percent}" IS NULL, {zero}, concat(format_number(to_string("{i_percent}"), 0), {percent}))'.format(i_percent=i_percent, zero=str("'0%'"), percent=str("'%'")))
 
                 if summary[0] == 3:
                     '''
                     Number of Persons with Indicator Present
                     Perform join attributes by location (summary) [sum]
                     '''
+                    mem_field = "Household members"
+                    mem_fields = [f.name() for f in household.fields().toList() if mem_field in f.name()]
 
-                    outfield = "{field}_PERSONS_WITH_INDICATOR".format(field=field)
-                    field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+                    household.setSubsetString(u'"{}" > 0'.format(field))
+
+                    # outfield = "{field}_PERSONS_AFFECTED".format(field=field)
+                    outfield = "{m}_AFFECTED".format(m=mem_fields[len(mem_fields)-1])
+                    field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
                     parameters = {'INPUT': boundary,
                                   'JOIN': household,
                                   'PREDICATE': [0],
-                                  'JOIN_FIELDS': fields,
+                                  'JOIN_FIELDS': mem_fields,
                                   'SUMMARIES': [5],
                                   'DISCARD_NONMATCHING': False,
                                   'OUTPUT': 'memory:'}
 
                     processing.runAndLoadResults("qgis:joinbylocationsummary", parameters)
                     layer_1 = QgsProject.instance().mapLayersByName("Joined layer")[0]
-                    refactor_fields(layer_1, [["{}_sum".format(field), outfield]])
+                    refactor_fields(layer_1, [["{}_sum".format(m), "{}_AFFECTED".format(m)] for m in mem_fields])
+                    # refactor_fields(layer_1, [["{}_sum".format(field), outfield]])
                     QgsProject.instance().removeMapLayers([layer_1.id()])
+
                     layer = QgsProject.instance().mapLayersByName("Refactored")[0]
                     layer.setName("{} ({} - {})".format(household.name(), field, summary[1]))
+
+                    household.setSubsetString(u'')
 
                     add_ranged_symbology(layer,
                                          field_expression,
@@ -281,7 +289,8 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
     def get_indicators_to_compute(self):
         """Get the field to compute statistics for"""
 
-        return [indicators.get_indicator_code_from_name(name) for name in [field.text() for field in self.fieldsList.selectedItems()]]
+        return [field.text() for field in self.fieldsList.selectedItems()]
+        # return [indicators.get_indicator_code_from_name(name) for name in [field.text() for field in self.fieldsList.selectedItems()]]
 
 
     def get_pdra_indicators_in_hh_layer(self):
@@ -290,10 +299,12 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
         household = self.selectHHComboBox.currentLayer()
         household_fields = [field.name() for field in household.fields().toList()]
         category = self.filterByCategoryComboBox.currentText()
-        pdra_fields = indicators.get_dict_of_indicator_codes_per_category()[category]
+        pdra_fields = indicators.get_dict_of_indicator_names_per_category()[category]
+        # pdra_fields = indicators.get_dict_of_indicator_codes_per_category()[category]
 
         fields = list(set(household_fields).intersection(pdra_fields))
-        fieldnames = [indicators.get_indicator_name_from_code(field) for field in fields]
+        # fieldnames = [indicators.get_indicator_name_from_code(field) for field in fields]
+        fieldnames = fields
 
         return sorted(fieldnames)
 
@@ -323,25 +334,6 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
         self.fieldsList.addItems(fieldnames)
 
 
-    def set_null_to_zero(self,
-                         layer,
-                         fieldName):
-
-        field = layer.fields().indexFromName(fieldName)
-        features = layer.getFeatures()
-        for f in features:
-            layer.startEditing()
-            attr = f.attributes()
-
-            try:
-                x = float(f[field])
-            except (TypeError, ValueError) as e:
-                f[field] = 0
-
-            layer.updateFeature(f)
-        layer.commitChanges()
-
-
     def total_households(self,
                          household,
                          boundary,
@@ -355,7 +347,7 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
         Perform join attributes by location (summary) [count]
         '''
         outfield = "{field}_HOUSEHOLDS".format(field=field)
-        field_expression = "IF({outfield} IS NULL, 0, {outfield})".format(outfield=outfield)
+        field_expression = 'IF("{outfield}" IS NULL, 0, "{outfield}")'.format(outfield=outfield)
         parameters = {'INPUT': boundary,
                       'JOIN': household,
                       'PREDICATE': [0],

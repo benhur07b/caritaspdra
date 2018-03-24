@@ -207,9 +207,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-risk.png'
         self.add_action(
             icon,
-            text=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
-            status_tip=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
-            whats_this=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
+            text=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (gpkg-version)'),
+            status_tip=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (gpkg-version)'),
+            whats_this=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (gpkg-version)'),
             callback=self.caritas_pdra_risk,
             parent=self.iface.mainWindow()
         )
@@ -238,9 +238,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-summary.png'
         self.add_action(
             icon,
-            text=self.tr(u'Summarize or Aggregate PDRA Data by Location (shp-vesion)'),
-            status_tip=self.tr(u'Summarize or Aggregate PDRA Data by Location (shp-vesion)'),
-            whats_this=self.tr(u'Summarize or Aggregate PDRA Data by Location (shp-vesion)'),
+            text=self.tr(u'Summarize or Aggregate PDRA Data by Location (gpkg-vesion)'),
+            status_tip=self.tr(u'Summarize or Aggregate PDRA Data by Location (gpkg-vesion)'),
+            whats_this=self.tr(u'Summarize or Aggregate PDRA Data by Location (gpkg-vesion)'),
             callback=self.caritas_pdra_summary,
             parent=self.iface.mainWindow()
         )
@@ -269,9 +269,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-summary-risk.png'
         self.add_action(
             icon,
-            text=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
-            status_tip=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
-            whats_this=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
+            text=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (gpkg-version)'),
+            status_tip=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (gpkg-version)'),
+            whats_this=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (gpkg-version)'),
             callback=self.caritas_pdra_summary_risk,
             parent=self.iface.mainWindow()
         )

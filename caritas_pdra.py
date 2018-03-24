@@ -78,6 +78,8 @@ class CaritasPDRA:
 
         # Declare instance attributes
         self.action_caritas_pdra_risk = None
+        self.action_caritas_pdra_summary = None
+        self.action_caritas_pdra_summary_risk = None
         self.actions = []
         self.menu = self.tr(u'&Caritas PDRA Analysis Tool')
 
@@ -183,6 +185,8 @@ class CaritasPDRA:
 
         # Create the Menu in plugins
         self._create_caritas_pdra_risk_action()
+        self._create_caritas_pdra_summary_action()
+        self._create_caritas_pdra_summary_risk_action()
 
 
     def unload(self):
@@ -203,9 +207,9 @@ class CaritasPDRA:
         icon = ':plugins/caritas_pdra/img/icons/icon-risk.png'
         self.add_action(
             icon,
-            text=self.tr(u'Caritas PDRA Risk Computation'),
-            status_tip=self.tr(u'Perform Risk computations using PDRA data'),
-            whats_this=self.tr(u'Perform Risk computations using PDRA data'),
+            text=self.tr(u'Perform Hazard, Vulnerability, Capacity, and Risk Computation using PDRA Data'),
+            status_tip=self.tr(u'Perform Hazard, Vulnerability, Capacity, and Risk Computation using PDRA Data'),
+            whats_this=self.tr(u'Perform Hazard, Vulnerability, Capacity, and Risk Computation using PDRA Data'),
             callback=self.caritas_pdra_risk,
             parent=self.iface.mainWindow()
         )
@@ -219,6 +223,67 @@ class CaritasPDRA:
         '''Run only if there are layers already loaded in QGIS'''
         if len(QgsProject.instance().mapLayers()) > 0:
             dialog = CaritasPDRARiskDialog(
+                self.iface.mainWindow())
+            dialog.exec_()
+
+        else:
+            msg = "NO LAYERS FOUND.\n\nAdd layers first before running the plugin."
+            QMessageBox.critical(self.iface.mainWindow(), "WARNING", msg)
+
+
+    '''PDRA Summary Computation'''
+    def _create_caritas_pdra_summary_action(self):
+        """Create action for PDRA summary computations"""
+
+        icon = ':plugins/caritas_pdra/img/icons/icon-summary.png'
+        self.add_action(
+            icon,
+            text=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
+            status_tip=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
+            whats_this=self.tr(u'Compute Summary Statistics or Aggregate from PDRA data'),
+            callback=self.caritas_pdra_summary,
+            parent=self.iface.mainWindow()
+        )
+
+
+    def caritas_pdra_summary(self):
+        """Show dialog for PDRA Summary Analysis"""
+
+        from .caritas_pdra_summary_dialog import CaritasPDRASummaryDialog
+
+        '''Run only if there are layers already loaded in QGIS'''
+        if len(QgsProject.instance().mapLayers()) > 0:
+            dialog = CaritasPDRASummaryDialog(
+                self.iface.mainWindow())
+            dialog.exec_()
+
+        else:
+            msg = "NO LAYERS FOUND.\n\nAdd layers first before running the plugin."
+            QMessageBox.critical(self.iface.mainWindow(), "WARNING", msg)
+
+
+    '''Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'''
+    def _create_caritas_pdra_summary_risk_action(self):
+        """Create action for PDRA summary computations"""
+
+        icon = ':plugins/caritas_pdra/img/icons/icon-summary-risk.png'
+        self.add_action(
+            icon,
+            text=self.tr(u'Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'),
+            status_tip=self.tr(u'Compute Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'),
+            whats_this=self.tr(u'Compute Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'),
+            callback=self.caritas_pdra_summary_risk,
+            parent=self.iface.mainWindow()
+        )
+
+    def caritas_pdra_summary_risk(self):
+        """Show dialog for PDRA Summary Risk Analysis"""
+
+        from .caritas_pdra_summary_risk_dialog import CaritasPDRASummaryRiskDialog
+
+        '''Run only if there are layers already loaded in QGIS'''
+        if len(QgsProject.instance().mapLayers()) > 0:
+            dialog = CaritasPDRASummaryRiskDialog(
                 self.iface.mainWindow())
             dialog.exec_()
 

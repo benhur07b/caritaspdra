@@ -22,7 +22,7 @@ Comma-separated value (CSV) files containing the PDRA indicators used in the ana
     - CATEGORY - Indicator category (e.g. Hazard, Vulnerability, Capacity, Risk)
     - VALUE - Value of the Indicator in computing for the household's level of Hazard, Vulnerability, and Capacity. A value of 1 means that the household's level (of Hazard, Vulnerability, or Capacity depending on the indicator category) is increased when the indicator is present.
 
-### Installing the Plugin
+## Installing the Plugin
 1. Choose which version to download:
 	-	_gpkg-version_ - [https://github.com/benhur07b/caritaspdra/tree/shp-version](https://github.com/benhur07b/caritaspdra/tree/gpkg-version)
 	-	_shp-version_ - [https://github.com/benhur07b/caritaspdra/tree/shp-version](https://github.com/benhur07b/caritaspdra/tree/shp-version)

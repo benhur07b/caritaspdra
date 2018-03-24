@@ -7,7 +7,7 @@ The tool has 2 working versions: the *shp-version* and the *gpkg-version*. Both 
 
 ### gpkg-version
 - optimized for handling PDRA data in GeoPackage (.gpkg) format where the **FIELDNAMES** are the **INDICATOR_NAMES** provided in the PDRA Indicator List CSV
--
+
 ### shp-version
 - optimized for handling PDRA data in Shapefile (.shp) format where the **FIELDNAMES** are the **INDICATOR_CODES** provided in the PDRA Indicator List CSV
 

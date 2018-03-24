@@ -34,7 +34,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Summarize or Aggregate PDRA Data by Location (shp-vesion)</string>
+   <string>Summarize or Aggregate PDRA Data by Location (gpkg-vesion)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">

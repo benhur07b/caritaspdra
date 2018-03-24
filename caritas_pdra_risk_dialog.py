@@ -107,6 +107,28 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         }
 
 
+    def get_selected_indicator_names(self):
+        """Get the indicator codes of the indicators selected for each list widget."""
+
+        selected_haz = self.hazListWidget.selectedIndexes()
+        selected_haz_names = [str(x.data()) for x in selected_haz]
+
+        selected_vul = self.vulListWidget.selectedIndexes()
+        selected_vul_names = [str(x.data()) for x in selected_vul]
+
+        selected_cap = self.capListWidget.selectedIndexes()
+        selected_cap_names = [str(x.data()) for x in selected_cap]
+
+        selected_all_names = selected_haz_names + selected_vul_names + selected_cap_names
+
+        return {
+            "Hazard": selected_haz_names,
+            "Vulnerability": selected_vul_names,
+            "Capacity": selected_cap_names,
+            "All": selected_all_names
+        }
+
+
     def count_main_indicators(self):
         """Count the main indicator classifications per category among the selected indicators.
 
@@ -133,12 +155,12 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
         result_basename = self.resultBasenameLineEdit.text()
 
         # codes of selected indicators
-        selected_indicators = self.get_selected_indicator_codes()
+        selected_indicators = self.get_selected_indicator_names()
         haz_codes = selected_indicators['Hazard']
         vul_codes = selected_indicators['Vulnerability']
         cap_codes = selected_indicators['Capacity']
         # codes of information category (household)
-        info_codes = indicators.get_indicator_codes_from_indicators_list(indicators.get_list_of_indicators_in_category("Information"))
+        info_codes = indicators.get_indicator_names_from_indicators_list(indicators.get_list_of_indicators_in_category("Information"))
 
         # field indices of selected indicators and information fields
         haz_indexes = [household.fields().indexFromName(code) for code in haz_codes]
@@ -239,7 +261,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
 
             for index in cat_indexes:
                 try:
-                    value = float(indicators.get_value_from_code(layer.fields().at(index).name()))
+                    value = float(indicators.get_value_from_name(layer.fields().at(index).name()))
                     total += (float(attr[index]) * value)
                 except (TypeError, ValueError) as e:
                     total += 0
@@ -335,7 +357,7 @@ class CaritasPDRARiskDialog(QDialog, Ui_CaritasPDRARiskDialog):
             for index in cat_indexes["Risk"]:
                 try:
                     x = float(attr[index])
-                    value = float(indicators.get_value_from_code(layer.fields().at(index).name()))
+                    value = float(indicators.get_value_from_name(layer.fields().at(index).name()))
                     if index in cat_indexes["Hazard"]:
 
                         haz_total += (x * value)

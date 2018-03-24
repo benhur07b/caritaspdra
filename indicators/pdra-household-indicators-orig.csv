@@ -85,6 +85,3 @@ HAZ_LEVEL,Level of Hazard,Risk,0
 VUL_LEVEL,Level of Vulnerability,Risk,0
 CAP_LEVEL,Level of Capacity,Risk,0
 RISK_LEVEL,Level of Risk,Risk,0
-V_MEM_T_M,Household members (Male),Vulnerability,1
-V_MEM_T_F,Household members (Female),Vulnerability,1
-V_MEM_T,Household members (Total),Vulnerability,1

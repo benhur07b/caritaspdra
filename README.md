@@ -12,7 +12,7 @@ The tool has 2 working versions: the *shp-version* and the *gpkg-version*. Both 
 - optimized for handling PDRA data in Shapefile (.shp) format where the **FIELDNAMES** are the **INDICATOR_CODES** provided in the PDRA Indicator List CSV
 
 ## PDRA Indicators CSV
-Comma-separated value (CSV) files containing the PDRA indicators used in the analysis can be found insed the **indicators** folder.
+Comma-separated value (CSV) files containing the PDRA indicators used in the analysis can be found in the **indicators** folder.
 
 ### PDRA Household Indicators
 - **FILE** : _pdra-household-indicators.csv_
@@ -34,3 +34,7 @@ Comma-separated value (CSV) files containing the PDRA indicators used in the ana
 		-   Windows: ```AppData\Roaming\QGIS\QGIS3\profiles\default```
 4. Open the **Manage and Install Plugins** Dialog in QGIS via ```Plugins -> Manage and Install Plugins```
 5. Activate Caritas PDRA Analysis Tool
+
+
+Icons used in the plugin are derivative of works from [Flaticon](https://www.flaticon.com).
+The original icons were designed by [pixel-perfect](https://www.flaticon.com/authors/pixel-perfect), [Pixel Buddha](https://www.flaticon.com/authors/pixel-buddha), [Smashicons](https://www.flaticon.com/authors/smashicons), and [Prosymbols](https://www.flaticon.com/authors/prosymbols) from [Flaticon](https://www.flaticon.com).

@@ -264,14 +264,14 @@ class CaritasPDRA:
 
     '''Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data'''
     def _create_caritas_pdra_summary_risk_action(self):
-        """Create action for PDRA summary computations"""
+        """Create action for PDRA risk summary computations"""
 
         icon = ':plugins/caritas_pdra/img/icons/icon-summary-risk.png'
         self.add_action(
             icon,
-            text=self.tr(u'Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
-            status_tip=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
-            whats_this=self.tr(u'Compute Compute Hazard, Vulnerability, Capacity, and Risk from PDRA Data (shp-version)'),
+            text=self.tr(u'Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data (shp-version)'),
+            status_tip=self.tr(u'Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data (shp-version)'),
+            whats_this=self.tr(u'Statistics on Hazard, Vulnerability, Capacity, and Risk Computed from PDRA Data (shp-version)'),
             callback=self.caritas_pdra_summary_risk,
             parent=self.iface.mainWindow()
         )

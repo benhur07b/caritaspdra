@@ -24,7 +24,7 @@ Comma-separated value (CSV) files containing the PDRA indicators used in the ana
 
 ## Installing the Plugin
 1. Choose which version to download:
-	-	_gpkg-version_ - [https://github.com/benhur07b/caritaspdra/tree/shp-version](https://github.com/benhur07b/caritaspdra/tree/gpkg-version)
+	-	_gpkg-version_ - [https://github.com/benhur07b/caritaspdra/tree/gpkg-version](https://github.com/benhur07b/caritaspdra/tree/gpkg-version)
 	-	_shp-version_ - [https://github.com/benhur07b/caritaspdra/tree/shp-version](https://github.com/benhur07b/caritaspdra/tree/shp-version)
 2. Go to **Clone or Download** and Click **Download ZIP**.
 3. Unzip the zipped file to your QGIS3 profile's plugins folder.

@@ -28,10 +28,10 @@ Comma-separated value (CSV) files containing the PDRA indicators used in the ana
 	-	_shp-version_ - [https://github.com/benhur07b/caritaspdra/tree/shp-version](https://github.com/benhur07b/caritaspdra/tree/shp-version)
 2. Go to **Clone or Download** and Click **Download ZIP**.
 3. Unzip the zipped file to your QGIS3 profile's plugins folder.
-	-	Here are the "standard" locations for Linux, Mac, and Windows, as found under your HOME directory (Thanks to Mr. Gary Sherman for [this](http://spatialgalaxy.net/2018/03/12/where-is-my-.qgis3-folder/):
-		-	Linux: ```.local/share/QGIS/QGIS3/profiles/default```
-		-   Mac OS X: ```Library/Application Support/QGIS/QGIS3/profiles/default```
-		-   Windows: ```AppData\Roaming\QGIS\QGIS3\profiles\default```
+	-	Here are the "standard" locations for Linux, Mac, and Windows, as found under your HOME directory assuming you're using the default QGIS profile (Thanks to Mr. Gary Sherman for [this](http://spatialgalaxy.net/2018/03/12/where-is-my-.qgis3-folder/):
+		-	Linux: ```.local/share/QGIS/QGIS3/profiles/default/python/plugins```
+		-   Mac OS X: ```Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins```
+		-   Windows: ```AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins```
 4. Open the **Manage and Install Plugins** Dialog in QGIS via ```Plugins -> Manage and Install Plugins```
 5. Activate Caritas PDRA Analysis Tool
 

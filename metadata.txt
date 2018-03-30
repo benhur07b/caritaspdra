@@ -28,7 +28,7 @@ repository=https://github.com/benhur07b/caritaspdra
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=https://benhur07b.github.io
+homepage=https://github.com/benhur07b/caritaspdra/wiki
 category=Plugins
 icon=icon.png
 # experimental flag

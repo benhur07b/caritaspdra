@@ -34,7 +34,7 @@ V_WACC_3,Water access (more than 100m),Vulnerability,0.5
 V_WACC_4,Water access (outside barangay),Vulnerability,1
 V_WSRC_1,Water source (deep well),Vulnerability,1
 V_WSRC_2,Water source (commercial provider),Vulnerability,0
-V_WSRC_3,Water source (government providerl),Vulnerability,0
+V_WSRC_3,Water source (government provider),Vulnerability,0
 V_CR_1,Sanitation (CR attached),Vulnerability,0
 V_CR_2,Sanitation (Common CR),Vulnerability,0.5
 V_CR_3,Sanitation (Latrine),Vulnerability,1

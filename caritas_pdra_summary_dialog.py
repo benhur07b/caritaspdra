@@ -187,7 +187,8 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                                   'FIELD': boundaryID,
                                   'FIELD_2': boundaryID,
                                   'FIELDS_TO_COPY': ["{}_count".format(field)],
-                                  'OUTPUT': 'memory:'
+                                  'OUTPUT': 'memory:',
+                                  'METHOD': 1,
                                   }
 
                     processing.runAndLoadResults("qgis:joinattributestable", parameters)

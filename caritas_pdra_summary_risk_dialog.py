@@ -172,7 +172,8 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                                     'FIELD': boundaryID,
                                     'FIELD_2': boundaryID,
                                     'FIELDS_TO_COPY': [low_field, med_field, high_field],
-                                    'OUTPUT': 'memory:'
+                                    'OUTPUT': 'memory:',
+                                    'METHOD': 1,
                                   }
 
                     processing.runAndLoadResults("qgis:joinattributestable", parameters_1)
@@ -358,7 +359,8 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                         'FIELD': boundaryID,
                         'FIELD_2': boundaryID,
                         'FIELDS_TO_COPY': ["{}_count".format(field)],
-                        'OUTPUT': 'memory:'
+                        'OUTPUT': 'memory:',
+                        'METHOD': 1,
                       }
 
         processing.runAndLoadResults("qgis:joinattributestable", parameters_1)
@@ -370,7 +372,8 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                         'FIELD': boundaryID,
                         'FIELD_2': boundaryID,
                         'FIELDS_TO_COPY': ["{}_count".format(field)],
-                        'OUTPUT': 'memory:'
+                        'OUTPUT': 'memory:',
+                        'METHOD': 1,
                       }
 
         processing.runAndLoadResults("qgis:joinattributestable", parameters_2)

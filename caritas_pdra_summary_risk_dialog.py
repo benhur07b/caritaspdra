@@ -174,6 +174,7 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                                     'FIELDS_TO_COPY': [low_field, med_field, high_field],
                                     'OUTPUT': 'memory:',
                                     'METHOD': 1,
+                                    'DISCARD_NONMATCHING': True
                                   }
 
                     processing.runAndLoadResults("qgis:joinattributestable", parameters_1)
@@ -364,6 +365,7 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                         'FIELDS_TO_COPY': ["{}_count".format(field)],
                         'OUTPUT': 'memory:',
                         'METHOD': 1,
+                        'DISCARD_NONMATCHING': True
                       }
 
         processing.runAndLoadResults("qgis:joinattributestable", parameters_1)
@@ -377,6 +379,7 @@ class CaritasPDRASummaryRiskDialog(QDialog, Ui_CaritasPDRASummaryRiskDialog):
                         'FIELDS_TO_COPY': ["{}_count".format(field)],
                         'OUTPUT': 'memory:',
                         'METHOD': 1,
+                        'DISCARD_NONMATCHING': True
                       }
 
         processing.runAndLoadResults("qgis:joinattributestable", parameters_2)

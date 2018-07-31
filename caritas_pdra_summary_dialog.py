@@ -189,6 +189,7 @@ class CaritasPDRASummaryDialog(QDialog, Ui_CaritasPDRASummaryDialog):
                                   'FIELDS_TO_COPY': ["{}_count".format(field)],
                                   'OUTPUT': 'memory:',
                                   'METHOD': 1,
+                                  'DISCARD_NONMATCHING': True
                                   }
 
                     processing.runAndLoadResults("qgis:joinattributestable", parameters)
